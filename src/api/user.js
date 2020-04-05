@@ -309,3 +309,30 @@ export const newMessageText = (_id,type,text,receiver,time)=>{
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
 }
+
+export const findChat = (_id,page)=>{
+	return axios({
+		method:'get',
+		url : `${route}/find/chat`,
+		params :{
+			_id,
+			page
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const findMessages = (page)=>{
+	return axios({
+		method:'get',
+		url : `${route}/find/messages`,
+		params :{
+			page
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}

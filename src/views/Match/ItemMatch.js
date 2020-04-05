@@ -50,6 +50,7 @@ ItemMatch.propTypes = {
 	item : PropTypes.shape({
 		_id : PropTypes.string.isRequired,
 		user :  PropTypes.shape({
+			_id : PropTypes.func.isRequired,
 			displayName: PropTypes.string.isRequired,
 			avatar : PropTypes.string.isRequired
 		})

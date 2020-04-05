@@ -20,21 +20,25 @@ class Match extends Component{
 		this.state = {
 			page : 0,
 			isRefreshing : false,
-			loadingMore : true,
+			loading : true,
 			matches : []
 		}
 	}
 
 	componentDidMount(){
-		this.findMatches(this.state.page);
+		this.findMatches('loading',this.state.page);
 	}
 
-	findMatches=async(page)=>{
+	findMatches= async(obj,page)=>{
 		try
 		{
+
+			this.setState({[obj]:true});
 			let {status,data} = await findMatches(page);
 			if(status ===200)
 			{
+				if(data.length===0) return this.setState({noData:true});
+
 				this.setState(prevState=>{
 					return{
 						matches: page === 0 ? data : [...prevState.matches,...data],
@@ -57,70 +61,35 @@ class Match extends Component{
 		}
 		catch(err)
 		{
-
-		}
-		finally
-		{
-			this.setState({
-				isRefreshing:false
-			})
-		}
-	}
-
-	handleRefresh = ()=>{
-		this.setState({
-			page : 0
-		},()=>{
-			this.findMatches(0);
-		})
-	}
-
-	handleLoadMore = async()=>{
-		try
-		{
-			this.setState({
-				loadingMore : true
-			});
-			let {status,data} = await findMatches(this.state.page);
-			if(status ===200)
-			{
-				this.setState(prevState=>{
-					return{
-						matches : [...prevState.matches,...data],
-						page : prevState.page + 1
-					}
-				})
-			}
-			else if(status===204)
-			{
-				this.setState({
-					loadingMore : false
-				});
-			}
-			else
-			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type :'danger'
-                })   
-			}
-
-		}
-		catch(err)
-		{
 			Toast.show({
                 text: 'Error',
                 textStyle: { fontSize: 15  },
                 buttonTextStyle: { color: '#000000', fontSize: 15 },
                 buttonText: "Ok",
                 duration: 3000,
-                type: "danger"
-            })   
+                type:'danger'
+            }) 
 		}
+		finally
+		{
+			this.setState({
+				[obj] : false
+			})	
+		}
+	}
+
+	handleRefresh = ()=>{
+		this.setState({
+			noData : false,//restablezco la condicion porque he cargado de nuevo los match
+			page : 0//restableco mi paginacion ya que estoy cargando match de nuevo
+		},()=>{
+			this.findMatches('isRefreshing',0);
+		})
+	
+	}
+
+	handleLoadMore =()=>{
+		if(!this.state.noData) this.findMatches('loading',this.state.page);
 	}
 
 	handleNavigation = (_id,user)=> this.props.navigation.navigate('Profile',{user:user,_id:_id})
@@ -137,10 +106,10 @@ class Match extends Component{
                     onRefresh ={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
           			onEndReachedThreshold={0.2}
-          			initialNumToRender={6}
+          			initialNumToRender={20}
           			ListFooterComponent = {
           				<LoadingCard 
-          					loadingMore = {this.state.loadingMore}
+          					loading = {this.state.loading}
           				/>
           			}
                     renderItem = {({item,index})=>(

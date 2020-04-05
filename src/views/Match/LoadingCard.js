@@ -12,13 +12,15 @@ let {width} = Dimensions.get('window'),
 	SCREEN_HEIGHT = SCREEN_WIDTH * 1.2;
 
 
-const LoadingCard = ({loadingMore})=>{
-	if(!loadingMore) return null;
+const LoadingCard = ({loading})=>{
+	if(!loading) return null;
 	return(
 		<ContentLoader style={styles.card}>
 			<Rect
 				x="2" 
 				y="2" 
+				rx = "10"
+				ry = "10"
 				width={SCREEN_WIDTH - 4} 
 				height={SCREEN_HEIGHT - 4} 
 			/>
@@ -28,18 +30,14 @@ const LoadingCard = ({loadingMore})=>{
 }
 
 LoadingCard.propTypes = {
-	loadingMore : PropTypes.bool.isRequired
+	loading : PropTypes.bool.isRequired
 }
 
 const styles = StyleSheet.create({
 	card :{
 		width : SCREEN_WIDTH,
 		height: SCREEN_HEIGHT,
-		borderRadius:4,
-		margin:10,
-		borderWidth:2,
-		borderColor:'#f1f1f1',
-		overflow:'hidden'
+		margin:10
 	},
 })
 

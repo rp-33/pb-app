@@ -4,9 +4,11 @@ import promise from 'redux-promise';
 import Nav from './nav';
 import user from './user';
 import loading from './loading';
+import messages  from './messages';
 
 export default createStore(combineReducers({
     navState: Nav,
     user,
-    loading
+    loading,
+    messages
 }),applyMiddleware(thunk,promise))

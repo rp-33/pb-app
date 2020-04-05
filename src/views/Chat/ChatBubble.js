@@ -7,8 +7,8 @@ import {
 	Dimensions
 } from 'react-native';
 import {Icon} from 'native-base';
+import {date} from '../../utils/date';
 import themeColor from '../../theme/color';
-import Moment from 'react-moment';
 
 let {width} = Dimensions.get('window');
 let SCREEN = width - 100;
@@ -45,13 +45,13 @@ const ChatBubble = ({message,myUser})=>{
 		<View 
 			style={[
 				styles.ctn,
-				{justifyContent : (myUser == message.sender._id) ? 'flex-end' : 'flex-start'}
+				{justifyContent : (myUser == message.sender) ? 'flex-end' : 'flex-start'}
 			]}
 		>
 			<View
 				style={[
 					styles.ctnText,
-					myUser == message.sender._id ? styles.ctnTextMyUser : styles.ctnTextOther
+					myUser == message.sender ? styles.ctnTextMyUser : styles.ctnTextOther
 				]}
 			>
 				{message.type == 'image' &&
@@ -63,8 +63,8 @@ const ChatBubble = ({message,myUser})=>{
 					</View>
 				}
 				{message.text && <Text>{message.text}</Text>}
-				<View style={[styles.time,{justifyContent : (myUser == message.sender._id) ? 'flex-end' : 'flex-start'}]}>
-					<Text>{message.time}</Text>
+				<View style={[styles.time,{justifyContent : (myUser == message.sender) ? 'flex-end' : 'flex-start'}]}>
+					<Text style={styles.textTime}>{date(message.time)}</Text>
 					<Icon 
                         name={icon(message.status)}
                        	type='MaterialCommunityIcons'
@@ -113,6 +113,9 @@ const styles = StyleSheet.create({
 		flexDirection:'row',
 		alignItems:'flex-end',
 		marginTop:5
+	},
+	textTime:{
+		color:themeColor.secondary
 	},
 	ctnFile : {
 		width:SCREEN,
