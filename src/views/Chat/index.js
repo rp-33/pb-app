@@ -19,8 +19,8 @@ import ChatBubble from './ChatBubble';
 import ModalBottom from './ModalBottom';
 import Loading from '../../presentations/LoadingMore';
 import {
-	newMessage,
-	changeStatusMessage
+	changeStatusMessage,
+	newMessage
 } from '../../utils/message';
 import {
 	newMessageText,
@@ -120,7 +120,7 @@ class Chat extends Component{
 	}
 
 	setMessage = async(text)=>{
-		let message = newMessage(this.props.user._id,this.user._id,'text',text,null,null);
+		let message = new newMessage(this.props.user._id,this.user._id,'text').setText(text);
 		this.setState(prevState=>{
 			return{
 				messages : [message,...prevState.messages]
@@ -153,7 +153,7 @@ class Chat extends Component{
 	}
 
 	setImage = async(image,text)=>{
-		let message = newMessage(this.props.user._id,this.user._id,'image',text,image,null);
+		let message = new newMessage(this.props.user._id,this.user._id,'image').setText(text).setImage(image);	
 		this.setState(prevState=>{
 			return{
 				messages : [message,...prevState.messages]
@@ -185,7 +185,7 @@ class Chat extends Component{
 	}
 
 	setLocation = async(location,text)=>{
-		let message = newMessage(this.props.user._id,this.user._id,'location',text,null,location);
+		let message = new newMessage(this.props.user._id,this.user._id,'location').setText(text).setLocation(location);	
 		this.setState(prevState=>{
 			return{
 				messages : [message,...prevState.messages]

@@ -1,17 +1,37 @@
 import moment from 'moment';
 
-export const newMessage = (sender,receiver,type,text,image,location)=>{
-	return{
-		time : moment().unix(),
-		status : 'not-send',
-		type : type,
-		text : text,
-		image : image,
-		sender : sender,
-		receiver : receiver,
-		location : location
-	};
-}//objeto del mensaje
+export class newMessage {
+	constructor(sender,receiver,type){
+		this.type = type;
+		this.status = 'not-send';
+		this.text = null;
+		this.time = moment().unix();
+		this.sender = sender;
+		this.receiver = receiver;
+		this.image = null;
+		this.location = null;
+	}
+
+	setText(text){
+		this.text = text;
+		return this;
+	}
+
+	setImage(image){
+		this.image = image;
+		return this;
+	}
+
+	setLocation(location){
+		this.location = location;
+		return this;
+	}
+
+	build(){
+		return this;
+	}
+
+}//patron de diseño builder
 
 export const changeStatusMessage = (data,status,time)=>{
 
