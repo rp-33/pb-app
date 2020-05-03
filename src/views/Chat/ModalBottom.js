@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { galery, camera } from '../../utils/imagepicker';
 import Proptypes from 'prop-types';
 
-const ModalBottom = ({modal, handleModal,setImage})=>{
+const ModalBottom = ({modal, handleModal,setImage,handleLocation})=>{
 
   const handleCamera = () => {
     handleModal();
@@ -23,6 +23,11 @@ const ModalBottom = ({modal, handleModal,setImage})=>{
     handleModal();
     galery(setImage);
   };
+
+  const handleOpenLocation = ()=>{
+    handleModal();
+    handleLocation();
+  }
 
   return(
     <Modal isVisible={modal} style={styles.bottomModal} onBackdropPress={()=>handleModal()} onBackButtonPress ={()=>handleModal()}>
@@ -37,7 +42,7 @@ const ModalBottom = ({modal, handleModal,setImage})=>{
             <Image source={require('../../assets/images/galery.png')} style={styles.img}/>
           </View>
         </TouchableOpacity> 
-         <TouchableOpacity>
+        <TouchableOpacity onPress = {()=>handleOpenLocation()}>
           <View style={styles.item}>
             <Image source={require('../../assets/images/point.png')} style={styles.img}/>
           </View>

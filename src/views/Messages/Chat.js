@@ -13,6 +13,18 @@ import {date} from '../../utils/date';
 
 const Chat = ({item,handleSelect,handleAddDelete,arrayDelete})=>{
 
+	const message = (type,text)=>{
+		switch (type) {
+			case 'image':
+				return 'Image';
+			case 'location':
+				return 'Location';
+			default:
+				return text;
+		}
+	}
+
+
 	return(
 	<TouchableNativeFeedback
 		onLongPress = {()=>handleAddDelete(item._id)} 
@@ -38,8 +50,8 @@ const Chat = ({item,handleSelect,handleAddDelete,arrayDelete})=>{
 				<Text 
 					numberOfLines = {2}
 					style={styles.msm}
-				>
-					{item.message[0].text}
+				>	
+					{message(item.message[0].type,item.message[0].text)}
 				</Text>
 			</View>
 			<View style={styles.right}>

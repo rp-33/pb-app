@@ -15,6 +15,8 @@ import Configuration from '../views/Configuration';
 import EditPassword from '../views/EditPassword';
 import Profile from '../views/Profile';
 import Chat from '../views/Chat';
+import ChatLocation from '../views/ChatLocation';
+import ChatImage from '../views/ChatImage';
 import { Icon } from 'native-base';
 
 
@@ -61,6 +63,7 @@ const Dashboard = createMaterialBottomTabNavigator({
     inactiveColor:'#c7c7c7'
   })
 
+
 const RootNavigator = createStackNavigator({
     Home : {
       screen: Home,
@@ -100,6 +103,14 @@ const RootNavigator = createStackNavigator({
     },
     Chat :{
       screen: Chat,
+      navigationOptions: {headerShown: false} 
+    },
+    ChatLocation :{
+      screen: ChatLocation,
+      navigationOptions: {headerShown: false} 
+    },
+    ChatImage :{
+      screen: ChatImage,
       navigationOptions: {headerShown: false} 
     }
 },

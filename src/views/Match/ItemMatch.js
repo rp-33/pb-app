@@ -48,9 +48,8 @@ const ItemMatch = ({item,handleNavigation})=>{
 ItemMatch.propTypes = {
 	handleNavigation : PropTypes.func.isRequired,
 	item : PropTypes.shape({
-		_id : PropTypes.string.isRequired,
 		user :  PropTypes.shape({
-			_id : PropTypes.func.isRequired,
+			_id : PropTypes.string.isRequired,
 			displayName: PropTypes.string.isRequired,
 			avatar : PropTypes.string.isRequired
 		})

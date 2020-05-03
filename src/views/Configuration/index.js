@@ -203,12 +203,14 @@ class Configuration extends Component{
 						</CardItem>
 					</Card>
 				</Content>
+				{this.state.modalDistance &&
 				<ModalDistance 
 					modal = {this.state.modalDistance}
 					distance ={distance}
 					handleModal = {this.handleModal('modalDistance')}
 					setDistance = {this.setDistance}
 				/>
+				}
 			</Container>
 		)
 	}

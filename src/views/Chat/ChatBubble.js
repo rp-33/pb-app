@@ -4,16 +4,24 @@ import {
 	StyleSheet,
 	Image,
 	Text,
-	Dimensions
+	TouchableOpacity,
+	Dimensions,
+	Linking
 } from 'react-native';
 import {Icon} from 'native-base';
 import {date} from '../../utils/date';
 import themeColor from '../../theme/color';
+import MapView from '../../presentations/MapView';
 
 let {width} = Dimensions.get('window');
 let SCREEN = width - 100;
 
-const ChatBubble = ({message,myUser})=>{
+const ChatBubble = ({message,myUser,handleOpenImage})=>{
+
+	const handleOpenGoogleMap = ({latitude,longitude})=>{
+		const url = `http://maps.google.com/?q=${latitude},${longitude}`;
+      	Linking.openURL(url);
+	}
 
 	const icon = (status)=>{
 		switch (status) {
@@ -41,6 +49,38 @@ const ChatBubble = ({message,myUser})=>{
 		}//['not-send','sent','received','seen','error']
 	}
 
+	const typeMessage = (message)=>{
+		switch(message.type){
+			case 'image':
+				return(
+					<TouchableOpacity 
+						onPress = {()=>handleOpenImage(message.image)}
+						style={styles.ctnFile}
+					>
+						<Image 
+							style={styles.file}
+							source = {{uri:message.image}}
+						/>
+					</TouchableOpacity>
+				)
+			case 'location':
+				return(
+					<TouchableOpacity 
+						onPress = {()=>handleOpenGoogleMap(message.location)}
+						style={styles.ctnFile}
+					>
+						<MapView
+							location = {message.location}
+						/>
+					</TouchableOpacity>
+					
+				)
+			default:
+				return null;
+		}
+	}
+
+
 	return(
 		<View 
 			style={[
@@ -51,17 +91,11 @@ const ChatBubble = ({message,myUser})=>{
 			<View
 				style={[
 					styles.ctnText,
-					myUser == message.sender ? styles.ctnTextMyUser : styles.ctnTextOther
+					myUser == message.sender ? styles.ctnTextMyUser : styles.ctnTextOther,
+					{width:message.type === 'text' ? 'auto' : SCREEN + 20}
 				]}
 			>
-				{message.type == 'image' &&
-					<View style={styles.ctnFile}>
-						<Image 
-							style={styles.file}
-							source = {{uri:message.image}}
-						/>
-					</View>
-				}
+				{typeMessage(message)}	
 				{message.text && <Text>{message.text}</Text>}
 				<View style={[styles.time,{justifyContent : (myUser == message.sender) ? 'flex-end' : 'flex-start'}]}>
 					<Text style={styles.textTime}>{date(message.time)}</Text>
@@ -83,7 +117,6 @@ const styles = StyleSheet.create({
 		flexDirection:'row',
 	},
 	ctnText:{
-		width:'auto',
 		paddingVertical:7,
 		paddingHorizontal:10,
 		shadowColor: "#000",

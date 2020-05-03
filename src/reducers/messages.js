@@ -8,6 +8,7 @@ import {
 	replaceMessage,
 	includes
 } from '../utils/message';
+import {setLogout} from '../actions/user';
 
 let initialState = [];
 
@@ -37,6 +38,8 @@ export default (state = initialState, action) => {
         	return state;
         case removeToMessage().type:    
         	return state.filter(item => !action.payload.includes(item._id));
+        case setLogout().type:
+            return initialState;
       default:
         return state;
     }

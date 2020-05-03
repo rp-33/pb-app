@@ -5,33 +5,43 @@ import {
 	Toast
 }
 from 'native-base';
-import CardStack, { Card } from 'react-native-card-stack-swiper';
+import {connect} from 'react-redux';
+import SwipeCards from 'react-native-swipe-cards';
 import CardItem from './CardItem';
 import HeadBack from '../../presentations/HeadBack';
+import NoMoreData from './NoMoreData';
 import {
 	searchUsers,
-	like
+	like,
+	disLike
 } from '../../api/user';
 
 class Search extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			users : []
+			users : [],
 		}
+		this.sex = props.user.sex;
 	}
 
 	componentDidMount(){
-		this._handleFindUser();
+		this._handleFindUser(this.sex);
 	}
 
-	_handleFindUser = async()=>{
+	componentDidUpdate(prevProps, prevState){
+		if(this.sex !=this.props.user.sex){
+			this.sex = this.props.user.sex;
+			this._handleFindUser(this.sex);
+		}
+	}
+
+	_handleFindUser = async(sex)=>{
 		try
 		{
-			let {status,data} = await searchUsers();
+			let {status,data} = await searchUsers(sex);
 			if(status === 200)
 			{
-				console.log(data)
 				this.setState({
 					users : data
 				})
@@ -50,54 +60,113 @@ class Search extends Component{
 		}
 	}
 
-	handleLike = async(_id)=>{
+	setUser = (index)=>{
+		let {_id} = this.state.users.find((item,i)=>(i===index));
+		return _id
+	}
+
+	handleNope = ({_id})=>{
 		try
 		{
-			await like(_id,false);
+			disLike(_id)
+			.then((response)=>{
+				let {status,data} = response;
+				if(status!=201)
+				{
+					Toast.show({
+                		text: data.error,
+                		textStyle: { fontSize: 15 },
+                		buttonTextStyle: { color: '#000000', fontSize: 15 },
+                		buttonText: "OK",
+                		duration: 3000,
+                		type: "danger"
+            		})   
+				}
+			})
+			.catch((err)=>{
+				throw err;
+			})
 		}
 		catch(err)
 		{
-
+			Toast.show({
+                text: 'Error',
+                textStyle: { fontSize: 15 },
+                buttonTextStyle: { color: '#000000', fontSize: 15 },
+                buttonText: "OK",
+                duration: 3000,
+                type: "danger"
+            })   
 		}
 	}
 
-	handleSuperLike = async(_id)=>{
+	handleYup = ({_id})=>{
 		try
 		{
-			await like(_id,true);
+			like(_id,false)
+			.then((response)=>{
+				let {status,data} = response;
+				if(status===201)
+				{
+					if(data.message!="match") return;//like
+					
+				}
+				else
+				{
+					Toast.show({
+                		text: data.error,
+                		textStyle: { fontSize: 15 },
+                		buttonTextStyle: { color: '#000000', fontSize: 15 },
+                		buttonText: "OK",
+                		duration: 3000,
+               			type: "danger"
+            		}) 
+				}
+			})
+			.catch((err)=>{
+				throw err;
+			})
 		}
 		catch(err)
 		{
-			
+			Toast.show({
+                text: 'Error',
+                textStyle: { fontSize: 15 },
+                buttonTextStyle: { color: '#000000', fontSize: 15 },
+                buttonText: "OK",
+                duration: 3000,
+                type: "danger"
+            })    
 		}
-
 	}
+	
+	userRemoved = (index)=>{
 
+   		let CARD_REFRESH_LIMIT = 1
+
+    	if (this.state.users.length - index <= CARD_REFRESH_LIMIT){
+    		this._handleFindUser();
+    	}
+	}
 
 	render(){
 		return(
 			<Container>
 
 				<HeadBack />
-
-				<CardStack
-					loop={false}
-					verticalSwipe={true}
-					renderNoMoreCards={() => null}
-					style={styles.content}
-					ref={swiper => { this.swiper = swiper }}>
-
-    				{this.state.users.map((item,i)=>
-    					<Card key={item._id}>
-    						<CardItem 
-    							item = {item} 
-    							handleLike = {this.handleLike}
-    							handleSuperLike = {this.handleSuperLike}
-    						/>
-    					</Card>                    
-    				)}
-  				</CardStack>
-
+				<SwipeCards
+        			cards={this.state.users}
+        			renderCard={(item) => <CardItem {...item} />}
+        			renderNoMoreCards={() => <NoMoreData />}
+        			yupText="LIKE"
+        			nopeText="DISLIKE"
+        			handleYup={this.handleYup}
+        			handleNope={this.handleNope} 
+        			handleMaybe={this.handleMaybe}
+        			cardRemoved={this.userRemoved} 	
+        			yupStyle = {{marginRight:20}}
+        			nopeStyle={{marginLeft:20}}		
+      			/>
 
 			</Container>
 		)
@@ -113,4 +182,8 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default Search;
+const mapStateToProps = state=>({
+	user : state.user
+})
+
+export default connect(mapStateToProps,null)(Search);

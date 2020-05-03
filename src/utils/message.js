@@ -14,7 +14,7 @@ export const newMessage = (sender,receiver,type,text,image,location)=>{
 }//objeto del mensaje
 
 export const changeStatusMessage = (data,status,time)=>{
-	
+
 	let newData = data.map((item,indice)=>{
 		if(item.time ==time)
 		{
@@ -32,6 +32,7 @@ export const replaceMessage = (data,newMessage,_id)=>{
 		{
 			item.message[0].text = newMessage.text;
 			item.message[0].time = newMessage.time;
+			item.message[0].type = newMessage.type;
 		}
 		return item;
 	})
@@ -42,8 +43,7 @@ export const replaceMessage = (data,newMessage,_id)=>{
 export const includes = (data,_id)=>{
 	let verified = false
 	data.forEach((item,index)=>{
-        if(item._id==_id) verified = true;
-        		
+        if(item._id==_id) verified = true;    		
     });
     return verified;
 }//verifica que ya un mensaje este abierto

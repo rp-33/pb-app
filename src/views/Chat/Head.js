@@ -17,7 +17,7 @@ import {
 import themeColor from '../../theme/color';
 import PropTypes from 'prop-types';
 
-const Head = ({avatar,displayName,handleBack}) => (
+const Head = ({avatar,displayName,handleBack,handleProfile}) => (
 	<Header noShadow style={{borderBottomWidth: 0,backgroundColor: themeColor.primary}} iosBarStyle='dark-content' androidStatusBarColor='white'>
         <View
         	style={styles.left}
@@ -25,7 +25,10 @@ const Head = ({avatar,displayName,handleBack}) => (
         	<Button transparent onPress={()=>handleBack()}>
         		<Icon name="ios-arrow-back" type='Ionicons' style={{color:'white'}}/>
         	</Button>
-        	<TouchableOpacity style={styles.left}>
+        	<TouchableOpacity 
+                onPress = {()=>handleProfile()}
+                style={styles.left}
+            >
         		<Image 
         		style={styles.avatar}
         		source={{uri:avatar}} 
@@ -41,7 +44,8 @@ const Head = ({avatar,displayName,handleBack}) => (
 Head.propTypes = {
 	displayName :  PropTypes.string.isRequired,
 	avatar : PropTypes.string.isRequired,
-	handleBack : PropTypes.func.isRequired
+	handleBack : PropTypes.func.isRequired,
+    handleProfile : PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({

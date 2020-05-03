@@ -95,13 +95,14 @@ class Match extends Component{
 	handleNavigation = (_id,user)=> this.props.navigation.navigate('Profile',{user:user,_id:_id})
 
 	render(){
+		console.log(this.state.matches)
 		return(
 			<Container>
 				<Head/>
 				<FlatList
                     numColumns = {2}
                     data = {this.state.matches}
-                    keyExtractor={(item, index) => item._id}
+                    keyExtractor={(item, index) => index.toString()}
                     refreshing = {this.state.isRefreshing}
                     onRefresh ={this.handleRefresh}
                     onEndReached={this.handleLoadMore}
@@ -114,7 +115,7 @@ class Match extends Component{
           			}
                     renderItem = {({item,index})=>(
                         <ItemMatch 
-                        	key = {item._id}
+                        	key = {index.toString()}
                         	item = {item}
                         	handleNavigation = {this.handleNavigation}
                         />

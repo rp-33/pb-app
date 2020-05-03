@@ -37,13 +37,14 @@ let initUser = {
 	email : '',
 	displayName : '',
 	avatar : null,
-	distance : null,
+	distance : 50,
 	isAuthenticated : false,
 	families : [],
 	pictures : [],
 	biography : '',
 	hobbies : [],
-	notifications : true
+	sex: 'male',
+	notifications : true,
 }
 
 

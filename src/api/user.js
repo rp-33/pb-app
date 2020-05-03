@@ -51,12 +51,12 @@ export const login = (email,password)=>{
 	.catch((err) => {return err.response})
 }
 
-export const searchUsers = ()=>{
+export const searchUsers = (sex)=>{
 	return axios({
 		method:'get',
 		url:`${route}/searchUsers`,
 		params :{
-			sex : findUserDb().sex
+			sex : sex
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
 	})
@@ -255,11 +255,24 @@ export const editPassword = (password)=>{
 
 export const like = (user,status)=>{
 	return axios({
-		method:'post',
+		method:'put',
 		url : `${route}/like`,
 		params :{
 			user,
 			like : status
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const disLike = (user)=>{
+	return axios({
+		method:'put',
+		url : `${route}/disLike`,
+		params :{
+			user
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
 	})
@@ -303,6 +316,47 @@ export const newMessageText = (_id,type,text,receiver,time)=>{
 			text,
 			receiver,
 			time
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const newMessageImage = (_id,type,text,image,receiver,time)=>{
+	let formData = new FormData();
+	formData.append('_id',_id);
+	formData.append('type',type);
+	formData.append('text',text);
+	formData.append('receiver',receiver);
+	formData.append('time',time);
+	formData.append('file',{
+        uri:image,
+        name:image,
+        type:'image/jpeg'
+    });
+
+	return axios({
+		method:'post',
+		url : `${route}/message/image`,
+		data : formData,
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const newMessageLocation = (_id,type,text,location,receiver,time)=>{
+	return axios({
+		method:'put',
+		url : `${route}/message/location`,
+		params :{
+			_id,
+			type,
+			location,
+			receiver,
+			time,
+			text
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
 	})

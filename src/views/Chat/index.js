@@ -24,11 +24,13 @@ import {
 } from '../../utils/message';
 import {
 	newMessageText,
-	findChat
+	findChat,
+	newMessageImage,
+	newMessageLocation
 } from '../../api/user';
 import {updateToMessage} from '../../actions/messages';
 
-let { height } = Dimensions.get('window'),
+const { height } = Dimensions.get('window'),
 	SCREEN_HEIGHT = height - 80;
 
 class Chat extends Component{
@@ -47,6 +49,23 @@ class Chat extends Component{
 
 	componentDidMount(){
 		this.findChat(this.state.page)
+	}
+
+	componentDidUpdate(prevProps, prevState){
+		
+		if(this.props.navigation.getParam('location'))
+		{
+			const { location,text } = this.props.navigation.state.params;
+			delete this.props.navigation.state.params['location'];
+			this.setLocation(location,text);
+			
+		}
+		else if(this.props.navigation.getParam('image'))
+		{
+			const { image,text } = this.props.navigation.state.params;
+			delete this.props.navigation.state.params['image'];
+			this.setImage(image,text);
+		}
 	}
 
 	findChat=async(page)=>{
@@ -131,18 +150,79 @@ class Chat extends Component{
             })
 		}
 
-
 	}
 
-	setImage = image=>{
-		let message = newMessage('5e4fd53291de4025832fa617','2','image',null,image,null);
-
+	setImage = async(image,text)=>{
+		let message = newMessage(this.props.user._id,this.user._id,'image',text,image,null);
 		this.setState(prevState=>{
 			return{
 				messages : [message,...prevState.messages]
 			}			
+		},()=>{
+			this.props.updateToMessage(this._id,message,this.user);//actualizo messages
 		})
+		try
+		{
+			let {status,data} = await newMessageImage(this._id,'image',text,image,this.user._id,message.time);
+			let statusMsm = (status===201) ? 'sent' : 'error';
+
+			let	newMsm = changeStatusMessage(this.state.messages,statusMsm,data.time);
+			this.setState({
+				messages : newMsm
+			})
+		}
+		catch(err)
+		{
+			Toast.show({
+                text: 'Error',
+                textStyle: { fontSize: 15  },
+                buttonTextStyle: { color: '#000000', fontSize: 15 },
+                buttonText: "Ok",
+                duration: 3000,
+                type: "danger"
+            })
+		}
 	}
+
+	setLocation = async(location,text)=>{
+		let message = newMessage(this.props.user._id,this.user._id,'location',text,null,location);
+		this.setState(prevState=>{
+			return{
+				messages : [message,...prevState.messages]
+			}			
+		},()=>{
+			this.props.updateToMessage(this._id,message,this.user);//actualizo messages
+		})
+		try
+		{
+			let {status,data} = await newMessageLocation(this._id,'location',text,location,this.user._id,message.time);
+			let statusMsm = (status===201) ? 'sent' : 'error';
+
+			let	newMsm = changeStatusMessage(this.state.messages,statusMsm,data.time);
+			this.setState({
+				messages : newMsm
+			})
+		}
+		catch(err)
+		{
+			Toast.show({
+                text: 'Error',
+                textStyle: { fontSize: 15  },
+                buttonTextStyle: { color: '#000000', fontSize: 15 },
+                buttonText: "Ok",
+                duration: 3000,
+                type: "danger"
+            })
+		}
+	}
+
+	handleOpenImage = picture => this.props.navigation.push('Picture',{picture: picture})
+
+	handleProfile = ()=> this.props.navigation.push('Profile',{user:this.user,_id:this._id})
+
+	handleLocation = ()=>this.props.navigation.push('ChatLocation');
+
+	handleSetImage = (image)=>this.props.navigation.push('ChatImage',{image:image});
 
 	render(){
 		return(
@@ -151,12 +231,13 @@ class Chat extends Component{
 					displayName = {this.user.displayName}
 					avatar = {this.user.avatar}
 					handleBack = {this.handleBack}
+					handleProfile = {this.handleProfile}
 				/>
 				<Image style={{flex:1,position:'absolute',zIndex:-1}} source={require('../../assets/images/chat-background.jpg')} />
 				<KeyboardAvoidingView style={{flex:1}} enabled>
 					<FlatList
                     	data = {this.state.messages}
-                    	keyExtractor={(item, index) => item._id}
+                    	keyExtractor={(item, index) => index.toString()}
                    		onEndReached={this.state.noData ? null : this.handleLoadMore}
           				onEndReachedThreshold={0.01}
           				initialNumToRender={30}
@@ -168,8 +249,10 @@ class Chat extends Component{
           				}
                     	renderItem = {({item,index})=>(
                         	<ChatBubble 
+                        		key ={index.toString()}
                         		message = {item}
                         		myUser = {this.props.user._id}
+                        		handleOpenImage = {this.handleOpenImage}
                         	/>
                     	)}
                 	/>
@@ -179,11 +262,15 @@ class Chat extends Component{
 					/>
 				</KeyboardAvoidingView>
                
-                <ModalBottom 
-                    modal = {this.state.modalBottom}
-                    handleModal = {this.handleModal}
-                    setImage = {this.setImage}
-                />
+               	{this.state.modalBottom &&
+                	<ModalBottom 
+                    	modal = {this.state.modalBottom}
+                    	handleModal = {this.handleModal}
+                    	setImage = {this.handleSetImage}
+                    	handleLocation = {this.handleLocation}
+                	/>
+                }
+
 			</Container>
 		)
 	}
