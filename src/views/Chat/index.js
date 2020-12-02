@@ -182,16 +182,16 @@ class Chat extends Component{
 	}
 
 	setLocation = async(location,text)=>{
-		let message = new newMessage(this.props.user._id,this.user._id,'location').setText(text).setLocation(location);	
-		this.setState(prevState=>{
+		try
+		{
+			let message = new newMessage(this.props.user._id,this.user._id,'location').setText(text).setLocation(location);	
+			this.setState(prevState=>{
 			return{
 				messages : [message,...prevState.messages]
 			}			
-		},()=>{
-			this.props.updateToMessage(this._id,message,this.user);//actualizo messages
-		})
-		try
-		{
+			},()=>{
+				this.props.updateToMessage(this._id,message,this.user);//actualizo messages
+			})
 			let {status,data} = await newMessageLocation(this._id,'location',text,location,this.user._id,message.time);
 			let statusMsm = (status===201) ? 'sent' : 'error';
 
