@@ -8,7 +8,7 @@ from 'native-base';
 import {connect} from 'react-redux';
 import SwipeCards from 'react-native-swipe-cards';
 import CardItem from './CardItem';
-import HeadBack from '../../presentations/HeadBack';
+import Head from './Head';
 import NoMoreData from './NoMoreData';
 import {
 	searchUsers,
@@ -23,23 +23,41 @@ class Search extends Component{
 			users : [],
 		}
 		this.sex = props.user.sex;
+		this.pet = props.user.pet;
+		this.location = props.user.location;
+		this.distance = props.user.distance
 	}
 
 	componentDidMount(){
-		this._handleFindUser(this.sex);
+		this._handleFindUser(this.sex,this.pet,this.location,this.distance);
 	}
 
 	componentDidUpdate(prevProps, prevState){
-		if(this.sex !=this.props.user.sex){
+		if(!this.props.user.isAuthenticated) return;
+
+		if(this.sex !=this.props.user.sex)
+		{
 			this.sex = this.props.user.sex;
-			this._handleFindUser(this.sex);
+			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+		}
+		else if(this.distance != this.props.user.distance)
+		{
+			this.distance = this.props.user.distance;
+			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+		
+		}
+		else if(this.pet != this.props.user.pet)
+		{
+			this.pet = this.props.user.pet;
+			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+		
 		}
 	}
 
-	_handleFindUser = async(sex)=>{
+	_handleFindUser = async(sex,pet,location,distance)=>{
 		try
 		{
-			let {status,data} = await searchUsers(sex);
+			let {status,data} = await searchUsers(sex,pet,location,distance);
 			if(status === 200)
 			{
 				this.setState({
@@ -145,24 +163,40 @@ class Search extends Component{
    		let CARD_REFRESH_LIMIT = 1
 
     	if (this.state.users.length - index <= CARD_REFRESH_LIMIT){
-    		this._handleFindUser();
+    		this._handleFindUser(this.sex,this.pet,this.location,this.distance);
     	}
+	}
+
+	handleNavigation = routeName=>this.props.navigation.push(routeName);
+
+	handleProfile = (_id,displayName,avatar)=>{
+
+		let user = {_id,displayName,avatar};
+
+		this.props.navigation.push('Profile',{user:user,_id:null});
 	}
 
 	render(){
 		return(
 			<Container>
 
-				<HeadBack />
+				<Head 
+					handleNavigation = {this.handleNavigation}
+				/>
 				<SwipeCards
         			cards={this.state.users}
-        			renderCard={(item) => <CardItem {...item} />}
+        			renderCard={(item) => (
+        				<CardItem 
+        					{...item} 
+        					myLocation = {this.props.user.location}
+        					handleProfile = {this.handleProfile}
+        				/>
+        			)}
         			renderNoMoreCards={() => <NoMoreData />}
         			yupText="LIKE"
         			nopeText="DISLIKE"
         			handleYup={this.handleYup}
         			handleNope={this.handleNope} 
-        			handleMaybe={this.handleMaybe}
         			cardRemoved={this.userRemoved} 	
         			yupStyle = {{marginRight:20}}
         			nopeStyle={{marginLeft:20}}		

@@ -50,6 +50,7 @@ class Sex extends Component{
 		}
 		catch(err)
 		{
+			console.log(err)
 			this.setState({
 				sex : value=='male' ? 'female' :  'male'
 			},()=>{

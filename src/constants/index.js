@@ -19,8 +19,8 @@ export const SignInSchema = Yup.object().shape({
 export const FargotPasswordSchema = {
     email: Yup.object().shape({
         email: Yup.string()
-          .email('Correo electrónico invalido')
-          .required('Correo electrónico es obligatorio'),
+            .email('Invalid email')
+            .required('Required email')
     }),
     code: Yup.object().shape({
         code: Yup.string()
@@ -54,12 +54,24 @@ export const ChangeDisplayNameSchema = Yup.object().shape({
         .required('Field is required'),
 });
 
+export const ChangeAgeSchema = Yup.object().shape({
+    age: Yup.number()
+        .required('Field is required')
+        .positive()
+        .integer()
+});
+
+
 export const SignUpSchema = Yup.object().shape({
     displayName: Yup.string()
+        .required("Displayname required"),
+    petName: Yup.string()
         .required("Pet's name required"),
     email: Yup.string()
         .email('Email invalid')
         .required('Email required'),
+    age : Yup.number()
+        .required("Pet's name required"),
     password: Yup.string()
         .min(6, 'The password must be at least 6 characters')
         .max(16, 'Password must be less than 16 characters')

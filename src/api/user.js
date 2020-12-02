@@ -1,8 +1,10 @@
 import axios from 'axios';
 import endpointBase from '../configuration/endPoint';
-import {findUserDb} from '../services/realm';
+import userDb from '../database/user';
 
-let route = `${endpointBase}/user`;
+let db = new userDb();
+
+let route = `${endpointBase}`;
 
 export const verifiedEmail = (email)=>{
 	return axios({
@@ -16,15 +18,19 @@ export const verifiedEmail = (email)=>{
 	.catch((err) => {return err.response})
 }
 
-export const signup = (displayName,email,sex,password,uri)=>{
+export const signup = (displayName,email,sex,age,password,avatar,pet,longitude,latitude)=>{
 	let formData = new FormData();
 	formData.append('displayName',displayName);
 	formData.append('email',email);
 	formData.append('sex',sex);
+	formData.append('age',age);
 	formData.append('password',password);
+	formData.append('pet',pet);
+	formData.append('longitude',longitude);
+	formData.append('latitude',latitude);
 	formData.append('file',{
-        uri:uri,
-        name:uri,
+        uri:avatar,
+        name:avatar,
         type:'image/jpeg'
     });
 
@@ -51,14 +57,18 @@ export const login = (email,password)=>{
 	.catch((err) => {return err.response})
 }
 
-export const searchUsers = (sex)=>{
+export const searchUsers = (sex,pet,location,distance)=>{
 	return axios({
 		method:'get',
 		url:`${route}/searchUsers`,
 		params :{
-			sex : sex
+			sex,
+			pet,
+			longitude : location[0],
+			latitude : location[1],
+			distance
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -71,13 +81,13 @@ export const editAvatar = (uri)=>{
         name:uri,
         type:'image/jpeg'
     });
-    formData.append('avatar',findUserDb().avatar);
+    formData.append('avatar',db.get().avatar);
 
     return axios({
 		method:'put',
 		url : `${route}/user/edit/avatar`,
 		data : formData,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	})
 	.then((response)=>{return response})
 	.catch((err)=>{return err.response})
@@ -95,13 +105,12 @@ export const saveFamily = (uri)=>{
 		method:'put',
 		url : `${route}/user/saveFamily`,
 		data : formData,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response)=>{return response})
 	.catch((err)=>{return err.response})
 }
-
 
 export const editBiography = (biography)=>{
 	return axios({
@@ -110,7 +119,7 @@ export const editBiography = (biography)=>{
 		params :{
 			biography
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -124,7 +133,7 @@ export const saveHobbie = (hobbie)=>{
 		params :{
 			hobbie
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -138,7 +147,7 @@ export const deletehobbie = (hobbie)=>{
 		params :{
 			hobbie
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -152,7 +161,7 @@ export const deletepicture = (picture)=>{
 		params :{
 			picture
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -166,7 +175,7 @@ export const deletefamily = (family)=>{
 		params :{
 			family
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -180,7 +189,7 @@ export const editDisplayName = (displayName)=>{
 		params :{
 			displayName
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -189,9 +198,9 @@ export const editDisplayName = (displayName)=>{
 
 export const logout = ()=>{
 	return axios({
-		method:'get',
+		method:'put',
 		url : `${route}/logout`,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -205,7 +214,7 @@ export const editDistance = (distance)=>{
 		params :{
 			distance
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -219,7 +228,7 @@ export const editSex = (sex)=>{
 		params :{
 			sex
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -233,25 +242,54 @@ export const editNotifications = (notifications)=>{
 		params :{
 			notifications
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
 }
 
-export const editPassword = (password)=>{
+export const editAge = (age)=>{
+	return axios({
+		method:'put',
+		url : `${route}/user/edit/age`,
+		params :{
+			age
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const editPet = (pet)=>{
+	return axios({
+		method:'put',
+		url : `${route}/user/edit/pet`,
+		params :{
+			pet
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+
+export const editPassword = (password,token)=>{
+
+	token = token ? token : db.get().token;
+
 	return axios({
 		method:'put',
 		url : `${route}/user/edit/password`,
 		params :{
 			password
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
 }
-
 
 export const like = (user,status)=>{
 	return axios({
@@ -261,7 +299,7 @@ export const like = (user,status)=>{
 			user,
 			like : status
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -274,20 +312,20 @@ export const disLike = (user)=>{
 		params :{
 			user
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
 }
 
-export const findMatches = (page)=>{
+export const findMatches = (lengthMatches)=>{
 	return axios({
 		method:'get',
 		url : `${route}/find/matches`,
 		params :{
-			page
+			lengthMatches
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -300,7 +338,7 @@ export const findUser = (_id)=>{
 		params :{
 			_id
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -308,7 +346,7 @@ export const findUser = (_id)=>{
 
 export const newMessageText = (_id,type,text,receiver,time)=>{
 	return axios({
-		method:'put',
+		method:'post',
 		url : `${route}/message/text`,
 		params :{
 			_id,
@@ -317,7 +355,7 @@ export const newMessageText = (_id,type,text,receiver,time)=>{
 			receiver,
 			time
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -340,7 +378,7 @@ export const newMessageImage = (_id,type,text,image,receiver,time)=>{
 		method:'post',
 		url : `${route}/message/image`,
 		data : formData,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -348,7 +386,7 @@ export const newMessageImage = (_id,type,text,image,receiver,time)=>{
 
 export const newMessageLocation = (_id,type,text,location,receiver,time)=>{
 	return axios({
-		method:'put',
+		method:'post',
 		url : `${route}/message/location`,
 		params :{
 			_id,
@@ -358,7 +396,7 @@ export const newMessageLocation = (_id,type,text,location,receiver,time)=>{
 			time,
 			text
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -372,20 +410,46 @@ export const findChat = (_id,page)=>{
 			_id,
 			page
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
 }
 
-export const findMessages = (page)=>{
+export const findMessages = (lengthMessages)=>{
 	return axios({
 		method:'get',
 		url : `${route}/find/messages`,
 		params :{
-			page
+			lengthMessages
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + findUserDb().token}	
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const sendCodePassword = (email)=>{
+	return axios({
+		method:'post',
+		url : `${route}/password/sendCode`,
+		params :{
+			email
+		},
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const verifyCodePassword = (email,code,token)=>{
+	return axios({
+		method:'get',
+		url : `${route}/password/verifyCode`,
+		params :{
+			email,
+			code
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})

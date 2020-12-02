@@ -26,9 +26,11 @@ const Head = ({ handleBack,handleNavigation }) => (
              <Image source ={require('../../assets/images/logo.png')} style={{width:30,height:30}} />
         </Body>
         <Right style={Platform.OS === 'android' ? {flex:1} : null}>
-            <Button primary onPress={handleNavigation} transparent>
-                <Icon name="ios-chatbubbles" type="Ionicons" />             
-            </Button>
+            {handleNavigation &&
+                <Button primary onPress={handleNavigation} transparent>
+                    <Icon name="ios-chatbubbles" type="Ionicons" />             
+                </Button>
+            }
         </Right>
     </Header>
 );

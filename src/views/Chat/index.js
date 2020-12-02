@@ -29,6 +29,7 @@ import {
 	newMessageLocation
 } from '../../api/user';
 import {updateToMessage} from '../../actions/messages';
+import {findChatId} from '../../utils/message';
 
 const { height } = Dimensions.get('window'),
 	SCREEN_HEIGHT = height - 80;
@@ -36,19 +37,19 @@ const { height } = Dimensions.get('window'),
 class Chat extends Component{
 	constructor(props){
 		super(props);
+		this._id = this.props.navigation.getParam('_id');
+		this.user = this.props.navigation.getParam('user');		
 		this.state = {
-			messages : [],
+		messages : findChatId(this.props.messages,this._id),
 			modalBottom : false,
 			page : 0,
 			loading : true,
 			noData : false
 		}
-		this._id = this.props.navigation.getParam('_id');
-		this.user = this.props.navigation.getParam('user');
 	}
 
 	componentDidMount(){
-		this.findChat(this.state.page)
+		this.findChat(this.state.messages.length);
 	}
 
 	componentDidUpdate(prevProps, prevState){
@@ -115,28 +116,25 @@ class Chat extends Component{
     };
 
 	handleLoadMore = ()=>{
-		if(!this.state.noData) this.findChat(this.state.page);
+		if(!this.state.noData) this.findChat(this.state.messages.length);
 		
 	}
 
 	setMessage = async(text)=>{
-		let message = new newMessage(this.props.user._id,this.user._id,'text').setText(text);
-		this.setState(prevState=>{
-			return{
-				messages : [message,...prevState.messages]
-			}			
-		},()=>{
-			this.props.updateToMessage(this._id,message,this.user);//actualizo messages
-		})
-
 		try
 		{
+			let message = new newMessage(this.props.user._id,this.user._id,'text').setText(text);
+			this.setState(prevState=>{
+				return{
+					messages : [message,...prevState.messages]
+				}			
+			},()=>{
+				this.props.updateToMessage(this._id,message,this.user);//actualizo messages
+			})
 			let {status,data} = await newMessageText(this._id,'text',text,this.user._id,message.time);
 			let statusMsm = (status===201) ? 'sent' : 'error';
 			let	newMsm = changeStatusMessage(this.state.messages,statusMsm,data.time);
-				this.setState({
-					messages : newMsm
-				})
+			this.setState({messages : newMsm})
 		}
 		catch(err)
 		{
@@ -153,19 +151,18 @@ class Chat extends Component{
 	}
 
 	setImage = async(image,text)=>{
-		let message = new newMessage(this.props.user._id,this.user._id,'image').setText(text).setImage(image);	
-		this.setState(prevState=>{
-			return{
-				messages : [message,...prevState.messages]
-			}			
-		},()=>{
-			this.props.updateToMessage(this._id,message,this.user);//actualizo messages
-		})
 		try
 		{
+			let message = new newMessage(this.props.user._id,this.user._id,'image').setText(text).setImage(image);	
+			this.setState(prevState=>{
+				return{
+					messages : [message,...prevState.messages]
+				}			
+			},()=>{
+				this.props.updateToMessage(this._id,message,this.user);//actualizo messages
+			})
 			let {status,data} = await newMessageImage(this._id,'image',text,image,this.user._id,message.time);
 			let statusMsm = (status===201) ? 'sent' : 'error';
-
 			let	newMsm = changeStatusMessage(this.state.messages,statusMsm,data.time);
 			this.setState({
 				messages : newMsm
@@ -216,7 +213,7 @@ class Chat extends Component{
 		}
 	}
 
-	handleOpenImage = picture => this.props.navigation.push('Picture',{picture: picture})
+	handleOpenImage = picture => this.props.navigation.push('ChatPicture',{picture: picture})
 
 	handleProfile = ()=> this.props.navigation.push('Profile',{user:this.user,_id:this._id})
 
@@ -277,7 +274,8 @@ class Chat extends Component{
 }
 
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.user,
+    messages: state.messages
 })
 
 const mapDispatchToProps = dispatch => ({

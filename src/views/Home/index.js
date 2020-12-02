@@ -13,11 +13,11 @@ import {
 class Home extends Component{
 
 	_handleSignup = ()=>{
-		this.props.navigation.navigate('SignUp');
+		this.props.navigation.push('Signup');
 	}
 
 	_handleLogin = ()=>{
-		this.props.navigation.navigate('Login');
+		this.props.navigation.push('Login');
 	}
 
 	render(){
@@ -35,7 +35,7 @@ class Home extends Component{
 						style={styles.btnSignup}
 						onPress = {this._handleSignup}
 					>
-            			<Text style={styles.text}>Sing up</Text>
+            			<Text style={styles.text}>Sign up</Text>
           			</Button>
           			<Button 
           				full 

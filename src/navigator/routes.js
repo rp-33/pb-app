@@ -1,12 +1,16 @@
 import React from 'react';
+import { createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
-import {findUserDb} from '../services/realm'
+import userDb from '../database/user';
 import Home from '../views/Home/';
 import Login from '../views/Login';
 import SignUp from '../views/SignUp';
 import SignupAvatar from '../views/SignupAvatar';
+import SignupPets from '../views/SignupPets';
+import SignupLocation from '../views/SignupLocation';
 import Search from '../views/Search';
+import LostPets from '../views/LostPets';
 import Match from '../views/Match';
 import Messages from '../views/Messages';
 import MyProfile from '../views/MyProfile';
@@ -17,29 +21,175 @@ import Profile from '../views/Profile';
 import Chat from '../views/Chat';
 import ChatLocation from '../views/ChatLocation';
 import ChatImage from '../views/ChatImage';
+import StepEmail from '../views/recoverPassword/StepEmail';
+import StepCode from '../views/recoverPassword/StepCode';
+import StepPassword from '../views/recoverPassword/StepPassword';
+import StepPasswordSuccess from '../views/recoverPassword/StepSuccess';
+import EditPet from '../views/EditPet';
+import Adoption from '../views/Adoption';
+import Comments from '../views/Comments';
 import { Icon } from 'native-base';
 
+let db = new userDb();
 
 const nameIcon = {
   search:  'ios-compass',
-  match : 'md-heart',
-  messages : 'ios-chatbubbles',
+  lostPets : 'md-search',
+  adoption : 'md-paw',
   myProfile: 'contact',
 }
 
+const MessagesNavigator = createStackNavigator({
+  Messages: {
+    screen: Messages,
+    navigationOptions: {headerShown: false}
+  },
+  Chat:{
+    screen: Chat,
+    navigationOptions: {headerShown: false} 
+  },
+  ChatLocation :{
+    screen: ChatLocation,
+    navigationOptions: {headerShown: false} 
+  },
+  ChatImage :{
+    screen: ChatImage,
+    navigationOptions: {headerShown: false} 
+  },
+  ChatPicture :{
+    screen: Picture,
+    navigationOptions: {headerShown: false} 
+  },
+},
+{
+  initialRouteName: 'Messages'
+})
 
-const Dashboard = createMaterialBottomTabNavigator({
+
+const SearchNavigator = createStackNavigator({
+  Search: {
+    screen: Search,
+    navigationOptions: {headerShown: false}
+  },
+  Match: {
+    screen: Match,
+    navigationOptions: {headerShown: false}
+  },
+  Profile:{
+    screen: Profile,
+    navigationOptions: {headerShown: false} 
+  },
+  Picture:{
+    screen: Picture,
+    navigationOptions: {headerShown: false} 
+  },
+  Messages : {
+    screen: MessagesNavigator,
+    navigationOptions: {headerShown: false}
+  }
+},
+{
+  initialRouteName: 'Search'
+});
+
+SearchNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+
+MessagesNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+const LostPetsNavigator = createStackNavigator({
+  LostPets : {
+    screen: LostPets,
+    navigationOptions: {headerShown: false}
+  },
+  Comments : {
+    screen: Comments,
+    navigationOptions: {headerShown: false}
+  }
+},
+{
+  initialRouteName: 'LostPets'
+})
+
+LostPetsNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+const AdoptionNavigator = createStackNavigator({
+  Adoption : {
+    screen: Adoption,
+    navigationOptions: {headerShown: false}
+  },
+  Comments : {
+    screen: Comments,
+    navigationOptions: {headerShown: false}
+  }
+},
+{
+  initialRouteName: 'Adoption'
+})
+
+AdoptionNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+const MyProfileNavigator = createStackNavigator({
+  MyProfile : {
+    screen: MyProfile,
+    navigationOptions: {headerShown: false}
+  },
+  Configuration : {
+    screen: Configuration,
+    navigationOptions: {headerShown: false}
+  },
+  EditPassword:{
+    screen: EditPassword,
+    navigationOptions: {headerShown: false} 
+  },
+  MyPicture:{
+    screen: Picture,
+    navigationOptions: {headerShown: false} 
+  },
+  EditPet : {
+    screen: EditPet,
+    navigationOptions: {headerShown: false} 
+  }
+},
+{
+  initialRouteName: 'MyProfile'
+})
+
+MyProfileNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+
+const DashboardNavigator = createMaterialBottomTabNavigator({
     search:{
-      screen:Search
+      screen: SearchNavigator
     },
-    match:{
-      screen:Match
+    lostPets:{
+      screen : LostPetsNavigator
     },
-    messages:{
-      screen:Messages
+    adoption : {
+      screen : AdoptionNavigator
     },
     myProfile:{
-      screen:MyProfile
+      screen: MyProfileNavigator
     }
   },
   {
@@ -61,61 +211,86 @@ const Dashboard = createMaterialBottomTabNavigator({
     barStyle: { backgroundColor: '#fff' },
     activeColor:'#ff6969',
     inactiveColor:'#c7c7c7'
-  })
+})
 
-
-const RootNavigator = createStackNavigator({
-    Home : {
-      screen: Home,
-      navigationOptions: {headerShown: false}
-    },
-    Login : {
-      screen: Login,
-      navigationOptions: {headerShown: false}
-    },
-    SignUp : {
-      screen: SignUp,
-      navigationOptions: {headerShown: false}
-    },
-    SignupAvatar : {
-      screen: SignupAvatar,
-      navigationOptions: {headerShown: false}   
-    },
-    Dashboard:{
-      screen: Dashboard,
-      navigationOptions: {headerShown: false} 
-    },
-    Picture:{
-      screen: Picture,
-      navigationOptions: {headerShown: false} 
-    },
-    Configuration:{
-      screen: Configuration,
-      navigationOptions: {headerShown: false} 
-    },
-    EditPassword:{
-      screen: EditPassword,
-      navigationOptions: {headerShown: false} 
-    },
-    Profile:{
-      screen: Profile,
-      navigationOptions: {headerShown: false} 
-    },
-    Chat :{
-      screen: Chat,
-      navigationOptions: {headerShown: false} 
-    },
-    ChatLocation :{
-      screen: ChatLocation,
-      navigationOptions: {headerShown: false} 
-    },
-    ChatImage :{
-      screen: ChatImage,
-      navigationOptions: {headerShown: false} 
-    }
+const PasswordNavigator = createStackNavigator({
+  RecoverPassword : {
+    screen: StepEmail,
+    navigationOptions: {headerShown: false}
+  },
+  StepCode : {
+    screen: StepCode,
+    navigationOptions: {headerShown: false}
+  },
+  StepPassword : {
+    screen: StepPassword,
+    navigationOptions: {headerShown: false}
+  },
+  StepPasswordSuccess : {
+    screen: StepPasswordSuccess,
+    navigationOptions: {headerShown: false}
+  }
 },
 {
-    initialRouteName: findUserDb().isAuthenticated ? 'Dashboard' : 'Home'
+  initialRouteName: 'RecoverPassword'
+})
+
+const SignupNavigator = createStackNavigator({
+  Signup: {
+    screen: SignUp,
+    navigationOptions: {headerShown: false}
+  },
+  SignupPets : {
+    screen: SignupPets,
+    navigationOptions: {headerShown: false}   
+  },
+  SignupAvatar : {
+    screen: SignupAvatar,
+    navigationOptions: {headerShown: false}   
+  },
+  SignupLocation :{
+    screen : SignupLocation,
+    navigationOptions: {headerShown: false}  
+  }
+},
+{
+  initialRouteName: 'Signup' 
+})
+
+const HomeNavigator = createStackNavigator({
+  Home: {
+    screen: Home,
+    navigationOptions: {headerShown: false}
+  },
+  Login: {
+    screen: Login,
+    navigationOptions: {headerShown: false}
+  },
+  Signup: {
+    screen: SignupNavigator,
+    navigationOptions: {headerShown: false}
+  },
+  RecoverPassword : {
+    screen: PasswordNavigator,
+    navigationOptions: {headerShown: false}
+  }
+},{
+  initialRouteName: 'Home'
+})
+
+
+const RootNavigator = createSwitchNavigator({
+  Home: {
+    screen: HomeNavigator,
+    navigationOptions: {header: null}
+  },
+  Dashboard : {
+    screen: DashboardNavigator,
+    navigationOptions: {header: null }
+  }
+},
+{
+  initialRouteName: db.get().isAuthenticated ? 'Dashboard' : 'Home'
 })
 
 export { RootNavigator };

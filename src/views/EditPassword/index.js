@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import {
 	Container,
-	Content,
 	Button,
 	Form,
 	Text,

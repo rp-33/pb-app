@@ -9,6 +9,7 @@ import {
 	Content,
 	Toast,
 	H3,
+    Text,
     Icon
 }
 from 'native-base';
@@ -59,7 +60,7 @@ class MyProfile extends Component{
 		}
 	}
 
-	handleNavigation = ()=>this.props.navigation.navigate('Configuration');
+	handleNavigation = ()=>this.props.navigation.push('Configuration');
 
 	handleModal = (modal) => () => {
         this.setState(previosState=>({
@@ -439,7 +440,7 @@ class MyProfile extends Component{
         }
     }
 
-    handlePicture = picture => this.props.navigation.navigate('Picture',{picture: picture})
+    handlePicture = picture => this.props.navigation.push('MyPicture',{picture: picture})
 
 	render(){
 		let {
@@ -470,6 +471,7 @@ class MyProfile extends Component{
                             style={styles.icon}
                         />
                     </TouchableOpacity>
+
 					<Avatars 
 						avatar = {avatar}
 						pictures = {pictures}
@@ -512,28 +514,39 @@ class MyProfile extends Component{
                     handleModal = {this.handleModal('modalAvatar')}
                     setAvatar = {this.setAvatar}
                 />
+                {this.state.modalFamilies &&
                 <ModalFamily
                     modal = {this.state.modalFamilies}
                     handleModal = {this.handleModal('modalFamilies')}
                     setAvatar = {this.setFamily}
                 />
+                }
+
+                {this.state.modalBiography &&
                 <ModalBiography
                     modal = {this.state.modalBiography}
                     handleModal = {this.handleModal('modalBiography')}
                     biography = {biography}  
                     setBiography = {this.setBiography}
                 />
+                }
+
+                {this.state.modalHobbie &&
                 <ModalHobbie 
                     modal = {this.state.modalHobbie}
                     handleModal = {this.handleModal('modalHobbie')}
                     setHobbie  = {this.setHobbie}
                 />
+                }
+
+                {this.state.modalDisplayname &&
                 <ModalDisplayname
                     modal = {this.state.modalDisplayname}
                     handleModal = {this.handleModal('modalDisplayname')}
                     setDisplayname = {this.setDisplayname}
                     displayName = {displayName}
                 />
+                }
 			</Container>
 		)
 	}

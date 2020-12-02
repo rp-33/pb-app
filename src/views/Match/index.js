@@ -9,7 +9,7 @@ import {
 	Toast
 }
 from 'native-base';
-import Head from '../../presentations/HeadBack';
+import HeadBack from '../../presentations/HeadBack';
 import ItemMatch from './ItemMatch';
 import LoadingCard from './LoadingCard';
 import {findMatches} from '../../api/user';
@@ -34,7 +34,7 @@ class Match extends Component{
 		{
 
 			this.setState({[obj]:true});
-			let {status,data} = await findMatches(page);
+			let {status,data} = await findMatches(this.state.matches.length);
 			if(status ===200)
 			{
 				if(data.length===0) return this.setState({noData:true});
@@ -92,13 +92,17 @@ class Match extends Component{
 		if(!this.state.noData) this.findMatches('loading',this.state.page);
 	}
 
-	handleNavigation = (_id,user)=> this.props.navigation.navigate('Profile',{user:user,_id:_id})
+	handleNavigation = (_id,user)=> this.props.navigation.push('Profile',{user:user,_id:_id})
+
+	handleBack = ()=>this.props.navigation.goBack();
 
 	render(){
-		console.log(this.state.matches)
 		return(
 			<Container>
-				<Head/>
+				<HeadBack
+					title= "Match"
+					handleBack = {this.handleBack}
+				/>
 				<FlatList
                     numColumns = {2}
                     data = {this.state.matches}

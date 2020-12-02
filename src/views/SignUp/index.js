@@ -27,7 +27,7 @@ import { setLoading } from '../../actions/loading';
 class SignUp extends Component{
 
 	_handleBack = ()=>{
-		this.props.navigation.goBack();
+		this.props.navigation.navigate('Home');
 	}
 
 	_handleSignup = async (values,actions)=>{
@@ -39,7 +39,7 @@ class SignUp extends Component{
 			let {status,data} = await verifiedEmail(values.email);
 			if(status === 204)
 			{
-				navigation.push('SignupAvatar',values)
+				navigation.push('SignupPets',values)
 			}
 			else
 			{
@@ -86,7 +86,8 @@ class SignUp extends Component{
     						password : '',
     						displayName : '',
     						sex:'male',
-    						repeatPassword : ''
+    						repeatPassword : '',
+    						age : ''
     					}}
     					isSubmitting = {true}
     					validationSchema = {SignUpSchema}
@@ -96,13 +97,24 @@ class SignUp extends Component{
     					<Form style={styles.form}>
     					<FieldInput
    							formikProps = {formikProps}
-							placeholder="Pet's name"
+							placeholder="DisplayName"
 							type='displayName'					
+						/>
+    					<FieldInput
+   							formikProps = {formikProps}
+							placeholder="Pet's name"
+							type='petName'					
 						/>
    						<FieldInput
    							formikProps = {formikProps}
 							placeholder="Email"
 							type = "email"						
+						/>
+						<FieldInput
+   							formikProps = {formikProps}
+							placeholder="Pet age"
+							type = "age"
+							keyboardType = {"phone-pad"}					
 						/>
 						<View style={styles.ctnSex}>
 							<View style={styles.sex}>

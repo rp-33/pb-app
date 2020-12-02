@@ -12,13 +12,9 @@ import {
 	Icon,
 	Toast
 } from 'native-base';
-import {connect} from 'react-redux';
 import ModalBottom from './ModalBottom';
 import HeadBack from '../../presentations/HeadBack';
 import themeColor from '../../theme/color';
-import {signup} from '../../api/user';
-import { setAuth } from '../../actions/user';
-import { setLoading } from '../../actions/loading';
 
 class SignupAvatar extends Component{
 	constructor(props){
@@ -43,46 +39,9 @@ class SignupAvatar extends Component{
 	}
 
 	_handleSignup = async ()=>{
-		let { setAuth, setLoading,navigation} = this.props;
-        setLoading(true);
-		try
-		{
-			let email = this.props.navigation.getParam('email');
-			let sex = this.props.navigation.getParam('sex');
-			let password = this.props.navigation.getParam('password');
-			let {status,data} = await signup(this.displayName,email,sex,password,this.state.avatar);
-			if(status === 201)
-			{
-				setAuth(data);
-				navigation.reset([navigation.navigate({routeName:'Dashboard'})],0);
-			}
-			else
-			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })      
-			}
-
-		}
-		catch(err)
-		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
-		}
-		finally
-		{
-			setLoading(false);
-		}
+		let user = this.props.navigation.state.params;
+		user['avatar'] = this.state.avatar;
+		this.props.navigation.push('SignupLocation',user);
 	}
 
 	render(){
@@ -187,9 +146,5 @@ const styles = StyleSheet.create({
 	}
 })
 
-const mapDispatchToProps = dispatch => ({
-	setLoading: value => dispatch(setLoading(value)),
-	setAuth: value => dispatch(setAuth(value))
-});
 
-export default connect(null, mapDispatchToProps)(SignupAvatar);
+export default SignupAvatar;

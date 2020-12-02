@@ -21,19 +21,17 @@ import themeColor from '../../theme/color';
 class Profile extends Component{
 	constructor(props){
 		super(props);
-		let user = props.navigation.getParam('user');
+		this.user = props.navigation.getParam('user');
 		this.state = {
-			pictures : [user.avatar],
+			pictures : [this.user.avatar],
 			family : [],
 			hobbies : [],
 			biography : ''
 		};
-		this.id = user._id;
-		this.displayName = user.displayName;
 	}
 
 	componentDidMount(){
-		this.findUser(this.id);
+		this.findUser(this.user._id);
 	}
 
 	findUser = async(_id)=>{
@@ -85,14 +83,14 @@ class Profile extends Component{
 		});
 	}
 
-	handlePicture = picture => this.props.navigation.navigate('Picture',{picture: picture})
+	handlePicture = picture => this.props.navigation.push('Picture',{picture: picture})
 
 	render(){
 		return(
 			<Container>
 				<Head 
 					handleBack = {this.handleBack}
-					handleNavigation = {this.handleChat}
+					handleNavigation = {this.props.navigation.getParam('_id') ? this.handleChat : null}
 				/>
 				<Content style={styles.ctn}>
 					<View style ={styles.ctnText}>
@@ -108,7 +106,7 @@ class Profile extends Component{
                             style={styles.icon}
                         />
 						<H3 style={styles.capitalize}>
-                           {this.displayName}
+                           {this.user.displayName}
                         </H3>
 					</View>
 					<View style = {styles.ctnText}>

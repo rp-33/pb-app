@@ -40,7 +40,7 @@ class Login extends Component{
 			if(status === 200)
 			{
 				setAuth(data);
-				navigation.reset([navigation.navigate({routeName:'Dashboard'})],0);
+				navigation.navigate('Dashboard');
 			}
 			else
 			{
@@ -70,6 +70,8 @@ class Login extends Component{
 			setLoading(false);
 		}
 	}
+
+	recoverPassword = ()=>this.props.navigation.push('RecoverPassword')
 
 	render(){
 		return(
@@ -113,7 +115,9 @@ class Login extends Component{
     				)}
   					</Formik>
   					<View style={styles.ctnRecover}>
-  						<TouchableOpacity>
+  						<TouchableOpacity
+  							onPress = {this.recoverPassword}
+  						>
             				<Text style={styles.textRecover}>Recover Password</Text>
          	 			</TouchableOpacity>
          	 		</View>

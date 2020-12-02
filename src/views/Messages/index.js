@@ -30,11 +30,13 @@ class Messages extends Component{
 		this._findMessages(this.state.page);
 	}
 
+	handleBack = ()=>this.props.navigation.navigate('Search');
+
 	_findMessages = async(page)=>{
 		try
 		{
 			this.setState({loading:true});
-			let {status,data} = await findMessages(page);
+			let {status,data} = await findMessages(this.props.messages.length);
 			if(status ===200)
 			{
 				if(data.length===0) return this.setState({noData:true});
@@ -115,6 +117,7 @@ class Messages extends Component{
 				<Head 
 					dataLength = {this.state.delete.length}
 					handleDelete = {this.handleDelete}
+					handleBack = {this.handleBack}
 				/>
 				<FlatList
                     data = {this.orderBy(this.props.messages)}

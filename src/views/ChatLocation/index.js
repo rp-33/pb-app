@@ -28,7 +28,7 @@ class ChatLocation extends Component{
 		}
 	}
 
-	 componentDidMount(){
+	componentDidMount(){
       this.getPosition();
     }
 

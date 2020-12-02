@@ -5,7 +5,7 @@ export class newMessage {
 		this.type = type;
 		this.status = 'not-send';
 		this.text = null;
-		this.time = moment().unix();
+		this.time = moment().format();
 		this.sender = sender;
 		this.receiver = receiver;
 		this.image = null;
@@ -31,17 +31,11 @@ export class newMessage {
 		return this;
 	}
 
-}//patron de diseño builder
+}//patron de diseño builder para construir mis mensajes
 
 export const changeStatusMessage = (data,status,time)=>{
 
-	let newData = data.map((item,indice)=>{
-		if(item.time ==time)
-		{
-			item.status = status;
-		}
-		return item
-	})
+	let newData = data.map((item,indice)=>(item.time ==time ? {...item,status:status} : item))
 
 	return newData;
 }//me actualiza los estatus de los mensajes
@@ -50,15 +44,13 @@ export const replaceMessage = (data,newMessage,_id)=>{
 	let newData = data.map((item,indice)=>{
 		if(item._id == _id)
 		{
-			item.message[0].text = newMessage.text;
-			item.message[0].time = newMessage.time;
-			item.message[0].type = newMessage.type;
+			item.message.unshift(newMessage);
 		}
 		return item;
 	})
 
 	return newData;
-}//me actualiza el ultimo mensaje;
+}//me actualiza mis mensajes;
 
 export const includes = (data,_id)=>{
 	let verified = false
@@ -67,3 +59,13 @@ export const includes = (data,_id)=>{
     });
     return verified;
 }//verifica que ya un mensaje este abierto
+
+
+export const findChatId = (messages,id)=>{
+	for(let i=0;i<messages.length;i++)
+		{
+			if(messages[i]._id === id) return messages[i].message;
+		}
+
+		return [];
+}//busca los chat por id de menesajes

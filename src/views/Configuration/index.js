@@ -18,15 +18,18 @@ import {
 	setLogout,
 	setDistance,
 	setSex,
-	setNotifications
+	setNotifications,
+	setAge
 } from '../../actions/user';
 import { setLoading } from '../../actions/loading';
 import {
 	logout,
-	editDistance
+	editDistance,
+    editAge
 } from '../../api/user';
 import themeColor from '../../theme/color';
 import ModalDistance from './ModalDistance';
+import ModalAge from './ModalAge';
 import Sex from './Sex';
 import Notification from './Notification';
 
@@ -55,7 +58,7 @@ class Configuration extends Component{
             if(status === 204)
             {   
                 setLogout();
-				navigation.reset([navigation.navigate({routeName:'Home'})],0);
+				navigation.navigate('Home');
             }
             else
             {             
@@ -132,6 +135,51 @@ class Configuration extends Component{
         }
 	}
 
+	setAge = async(values, actions)=>{
+        let { setLoading, setAge} = this.props;
+        setLoading(true);
+        try{            
+            let { status, data } = await editAge(values.age)
+            if(status === 201)
+            {   
+                setAge(parseInt(values.age));
+                Toast.show({
+                    text: 'saved successfully',
+                    textStyle: { fontSize: 15  },
+                    buttonTextStyle: { color: '#000000', fontSize: 15 },
+                    buttonText: "Ok",
+                    duration: 3000
+                }) 
+            }
+            else
+            {             
+                Toast.show({
+                    text: data.error,
+                    textStyle: { fontSize: 15  },
+                    buttonTextStyle: { color: '#000000', fontSize: 15 },
+                    buttonText: "Ok",
+                    duration: 3000,
+                    type: "danger"
+                })                
+            }
+        }
+        catch(err)
+        {
+            Toast.show({
+                text: 'Error',
+                textStyle: { fontSize: 15  },
+                buttonTextStyle: { color: '#000000', fontSize: 15 },
+                buttonText: "Ok",
+                duration: 3000,
+                type: "danger"
+            })
+        }
+        finally
+        {
+            setLoading(false);
+        }
+    }
+
 	setSex = (value)=>this.props.setSex(value);
 
 	setNotifications = (value)=>this.props.setNotifications(value);
@@ -142,7 +190,9 @@ class Configuration extends Component{
 		let {
 			sex,
 			notifications,
-			distance
+			distance,
+			pet,
+			age
 		} = this.props.user;
 		return(
 			<Container>
@@ -163,6 +213,23 @@ class Configuration extends Component{
 								</View>
 								<Text style={{color:themeColor.primary}}>{distance}</Text>
 							</View>
+						</CardItem>
+					</Card>
+					<Text style={styles.textInfo}>Information</Text>
+					<Card style={styles.card}>
+						<CardItem 
+							button
+							onPress = {()=>this.props.navigation.push('EditPet')}
+						>
+							<Icon style={styles.icon} type='FontAwesome5' name='filter' />
+							<Text>{pet}</Text>
+						</CardItem>
+						<CardItem 
+							button
+							onPress = {this.handleModal('modalAge')}						
+						>
+							<Icon style={styles.icon} type='FontAwesome5' name='birthday-cake' />                               
+							<Text>{age} years old</Text>
 						</CardItem>
 					</Card>
 					<Text style={styles.textInfo}>Sex</Text>
@@ -211,6 +278,14 @@ class Configuration extends Component{
 					setDistance = {this.setDistance}
 				/>
 				}
+				{this.state.modalAge &&
+                <ModalAge
+                    modal = {this.state.modalAge}
+                    handleModal = {this.handleModal('modalAge')}
+                    setAge = {this.setAge}
+                    age = {age.toString()}
+                />
+                }
 			</Container>
 		)
 	}
@@ -248,7 +323,8 @@ const mapDispatchToProps = dispatch => ({
     setLogout : ()=>dispatch(setLogout()),
     setDistance : value =>dispatch(setDistance(value)),
     setSex: value =>dispatch(setSex(value)),
-    setNotifications: value =>dispatch(setNotifications(value))
+    setNotifications: value =>dispatch(setNotifications(value)),
+    setAge : value =>dispatch(setAge(value))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Configuration);

@@ -38,6 +38,17 @@ export const setSex = (payload)=>({
     payload
 });
 
+export const setAge = (payload)=>({
+    type: 'AGE_USER',
+    payload
+});
+
+export const setPet = (payload)=>({
+    type: 'PET_USER',
+    payload
+});
+
+
 export const setNotifications = (payload)=>({
     type: 'NOTIFICATIONS_USER',
     payload

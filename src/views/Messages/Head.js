@@ -15,10 +15,14 @@ import {
 import themeColor from '../../theme/color';
 import PropTypes from 'prop-types';
 
-const Head = ({dataLength,handleDelete}) => {
+const Head = ({dataLength,handleDelete,handleBack}) => {
 	return(
 		<Header noShadow style={{borderBottomWidth: 0,backgroundColor: 'white'}} iosBarStyle='dark-content' androidStatusBarColor='white'>
-        	<Left style={Platform.OS === 'android' ? {flex:1} : null} />
+        	<Left style={Platform.OS === 'android' ? {flex:1} : null}>
+                <Button primary transparent onPress={()=>handleBack()}>
+                    <Icon name="ios-arrow-back" type='Ionicons'/>
+                </Button>          
+            </Left>
         	<Body style={Platform.OS === 'android' ? {flex:2,alignItems: 'center'} : null}>
          		<Image source ={require('../../assets/images/logo.png')} style={{width:30,height:30}} />       	
         	</Body>
@@ -39,7 +43,8 @@ const Head = ({dataLength,handleDelete}) => {
 
 Head.proptypes = {
     dataLength : PropTypes.number.isRequired,
-    handleDelete : PropTypes.func.isRequired
+    handleDelete : PropTypes.func.isRequired,
+    handleBack :  PropTypes.func.isRequired
 };
 
 export default Head;

@@ -1,19 +1,4 @@
-import {
-	findUserDb,
-	saveUserDb,
-	logoutDb,
-	updateDisplayNameDb,
-	updateAvatarDb,
-	updateNotificationsDb,
-	updateDistanceDb,
-	addFamilyDb,
-	updateBiographyDb,
-	addHobbieDb,
-	deleteHobbieDb,
-	deletePictureDb,
-	deleteFamilyDb,
-	updateSexDb
-} from '../services/realm';
+import userDb from '../database/user';
 
 import {
 	setAuth,
@@ -28,8 +13,12 @@ import {
 	setLogout,
 	setDistance,
 	setSex,
-	setNotifications
+	setNotifications,
+	setAge,
+	setPet
 } from '../actions/user';
+
+let db = new userDb();
 
 let initUser = {
 	_id: '',
@@ -45,85 +34,99 @@ let initUser = {
 	hobbies : [],
 	sex: 'male',
 	notifications : true,
+	pet : '',
+   	location : [],
+    age : null
 }
 
-
-const initialState = findUserDb() || initUser;
+const initialState = db.get() || initUser;
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case setAuth().type:
-        	saveUserDb(action.payload);
+        	db.save(action.payload)
             return action.payload;
         case setAvatar().type:
-			updateAvatarDb(action.payload);
+        	db.setAvatar(action.payload);
 			return {
 				...state, 
 				avatar: action.payload,
-				pictures : findUserDb().pictures
+				pictures : db.get().pictures
 			};
 		case setFamily().type:
-			addFamilyDb(action.payload);
+			db.setFamily(action.payload);
 			return {
 				...state, 
-				families : findUserDb().families
+				families : db.get().families
 			};
 		case setBiography().type:
-			updateBiographyDb(action.payload);
+			db.setBiography(action.payload);
 			return{
 				...state,
 				biography : action.payload
 			}
 		case setDisplayName().type:
-			updateDisplayNameDb(action.payload);
+			db.setDisplayName(action.payload);
 			return{
 				...state,
 				displayName : action.payload
 			}
 		case setHobbie().type:
-			addHobbieDb(action.payload);
+			db.setHobbie(action.payload);
 			return {
 				...state, 
-				hobbies: findUserDb().hobbies
+				hobbies: db.get().hobbies
 			};
 		case deleteHobbie().type:
-			deleteHobbieDb(action.payload);
+			db.deleteHobbie(action.payload);
 			return {
 				...state,
-				hobbies : findUserDb().hobbies
+				hobbies : db.get().hobbies
 			}
 		case deletePicture().type:
-			deletePictureDb(action.payload);
+			db.deletePicture(action.payload);
 			return {
 				...state,
-				pictures : findUserDb().pictures
+				pictures : db.get().pictures
 			}
 		case deleteFamily().type:
-			deleteFamilyDb(action.payload);
+			db.deleteFamily(action.payload);
 			return {
 				...state,
-				families : findUserDb().families
+				families : db.get().families
 			}
 		case setDistance().type:		
-			updateDistanceDb(action.payload);
+			db.setDistance(action.payload);
 			return{
 				...state,
 				distance : action.payload
 			}
 		case setSex().type:		
-			updateSexDb(action.payload);
+			db.setSex(action.payload);
 			return{
 				...state,
 				sex : action.payload
 			}
 		case setNotifications().type:	
-			updateNotificationsDb(action.payload);
+			db.setNotification(action.payload);
 			return{
 				...state,
 				notifications : action.payload
 			}
+		case setAge().type:	
+			db.setAge(action.payload);
+			return{
+				...state,
+				age : action.payload
+			}
+		case setPet().type:	
+			db.setPet(action.payload);
+			return{
+				...state,
+				pet : action.payload
+			}
 		case setLogout().type:
-			logoutDb();
+			db.logout();
 			return initUser;
         default:
             return state;

@@ -14,7 +14,10 @@ const UserModel = {
 		pictures: 'string?[]',
         biography : 'string?',
         hobbies : 'string?[]',
-        families : 'string?[]'
+        families : 'string?[]',
+        location : 'float[]',
+        age : 'int',
+        pet: 'string'
     }
 };
 

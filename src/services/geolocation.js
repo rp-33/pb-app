@@ -6,8 +6,7 @@ const geolocation = ()=>{
 
         try{
             Geolocation.getCurrentPosition(
-                position => {
-                    
+                position => {                  
                     resolve(position.coords)
                 },
                 error => {

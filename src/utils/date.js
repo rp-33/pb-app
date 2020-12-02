@@ -2,13 +2,13 @@ import moment from 'moment';
 
 let today = moment();
 
-const date = (timeUnix)=>{
+const date = (date)=>{
 
-	let time = moment.unix(timeUnix).format('MM/DD/YYYY');
+	let time = moment(date).format('MM/DD/YYYY');
 	let diff = today.diff(time,'days');
 	if(diff === 0)
 	{
-    	return moment.unix(timeUnix).format('LT');
+    	return moment(date).format('LT');
     }
     else if(diff ===1)
     {
@@ -16,11 +16,11 @@ const date = (timeUnix)=>{
     }
     else if(diff>1 && diff<7)
     {
-    	return moment.unix(timeUnix).format('dddd').substring(0,3);
+    	return moment(date).format('dddd').substring(0,3);
 	}
 	else
 	{
-    	return moment.unix(timeUnix).format('DD/MM/YYYY')
+    	return moment(date).format('DD/MM/YYYY')
     }
 }
 

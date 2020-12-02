@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import themeColor from '../../theme/color';
 import BarPictures from './BarPictures';
+import {distance}  from '../../utils/distance';
+import PropTypes from 'prop-types'
 
 let {width,height} = Dimensions.get('window'),
 	SCREEN_WIDTH  = (width - 20) /2;
 
-
-
-const CardItem = ({avatar,displayName,pictures})=>{
+const CardItem = ({_id,avatar,displayName,pictures,location,myLocation,handleProfile})=>{
 	const images = [avatar,...pictures];
 	const [position,setPosition] = useState(0);
 
@@ -40,8 +40,8 @@ const CardItem = ({avatar,displayName,pictures})=>{
 
 	return(
 		<View style={styles.container}>
-			<View style={styles.badge}>
-				<Text style={styles.badgeText}>{displayName} 25 km near you</Text>
+			<View style={[styles.badge,{top:15,left:10,backgroundColor:themeColor.primary}]}>
+				<Text style={styles.badgeText}>{displayName} {distance(myLocation,location.coordinates)} near you</Text>
 			</View>
 			<TouchableOpacity 
 				activeOpacity = {1}
@@ -57,8 +57,21 @@ const CardItem = ({avatar,displayName,pictures})=>{
 					style = {styles.avatar}
 				/>
 			</TouchableOpacity>
+			<TouchableOpacity 
+				onPress = {()=>handleProfile(_id,displayName,avatar)}
+				style={[styles.badge,{bottom:-15,backgroundColor:'#e2943a'}]}>
+				<Text style={styles.badgeText}>See profile</Text>
+			</TouchableOpacity>
 		</View>
 	)
+}
+
+CardItem.propTypes = {
+	avatar : PropTypes.string.isRequired,
+	displayName : PropTypes.string.isRequired,
+	pictures : PropTypes.array.isRequired,
+	location : PropTypes.object.isRequired,
+	myLocation : PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -80,7 +93,6 @@ const styles = StyleSheet.create({
 		elevation: 2,
 		position:'relative',
 		marginBottom:30,
-		overflow:'hidden'
 	},
 	ctnAvatar: {
 		width: '100%',
@@ -97,14 +109,10 @@ const styles = StyleSheet.create({
 		paddingTop:6,
 		paddingBottom:6,
 		borderRadius:25,
-		backgroundColor: themeColor.primary,
 		justifyContent:'center',
 		alignItems:'center',
 		position:'absolute',
-		top:15,
-		left:10,
 		zIndex:2
-	
 	},
 	badgeText:{
 		color:'white',
