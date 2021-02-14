@@ -5,7 +5,6 @@ import {
 	Image,
 	View,
 	Text,
-	Dimensions,
 	KeyboardAvoidingView
 } from 'react-native';
 import {
@@ -31,16 +30,13 @@ import {
 import {updateToMessage} from '../../actions/messages';
 import {findChatId} from '../../utils/message';
 
-const { height } = Dimensions.get('window'),
-	SCREEN_HEIGHT = height - 80;
-
 class Chat extends Component{
 	constructor(props){
 		super(props);
 		this._id = this.props.navigation.getParam('_id');
 		this.user = this.props.navigation.getParam('user');		
 		this.state = {
-		messages : findChatId(this.props.messages,this._id),
+			messages : findChatId(this.props.messages,this._id),
 			modalBottom : false,
 			page : 0,
 			loading : true,

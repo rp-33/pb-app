@@ -4,8 +4,7 @@ import {
 	View
 } from 'react-native';
 import {
-	Container,
-	Content
+	Container
 } from 'native-base';
 import Head from '../../presentations/HeadOption';
 import SelectPet from '../../presentations/SelectPet';
@@ -62,12 +61,13 @@ class LostPets extends Component{
 				<Head 
 					title = "Lost Pets"
 				/>
-				<Content>
-				<SelectPet 
-					petSelect = {this.state.petSelect}
-					handleSelectPet = {this.handleSelectPet}
-				/>
 				<FlatList
+					ListHeaderComponent={
+						<SelectPet 
+							petSelect = {this.state.petSelect}
+							handleSelectPet = {this.handleSelectPet}
+						/>
+     				}
 					style={{marginTop:10}}
                     data = {this.state.pets}
                     keyExtractor={(item, index) => item._id}
@@ -79,7 +79,6 @@ class LostPets extends Component{
                         />
                     )}
                 />
-                </Content>
 			</Container>
 		)
 	}

@@ -19,6 +19,8 @@ import { Formik } from 'formik';
 import { RadioButton } from 'react-native-paper';
 import HeadBack from '../../presentations/HeadBack';
 import FieldInput from '../../presentations/FieldInput';
+import SelectPet from '../../presentations/SelectPet';
+import Groupsex from '../../presentations/Groupsex';
 import { SignUpSchema } from '../../constants';
 import themeColor from '../../theme/color';
 import {verifiedEmail} from '../../api/user';
@@ -39,7 +41,7 @@ class SignUp extends Component{
 			let {status,data} = await verifiedEmail(values.email);
 			if(status === 204)
 			{
-				navigation.push('SignupPets',values)
+				navigation.push('SignupAvatar',values)
 			}
 			else
 			{
@@ -85,9 +87,11 @@ class SignUp extends Component{
     						email: '',
     						password : '',
     						displayName : '',
+    						petName : '',
     						sex:'male',
     						repeatPassword : '',
-    						age : ''
+    						age : '',
+    						pet : 'dog'
     					}}
     					isSubmitting = {true}
     					validationSchema = {SignUpSchema}
@@ -95,9 +99,13 @@ class SignUp extends Component{
   					>
     				{formikProps => (
     					<Form style={styles.form}>
+    					<SelectPet 
+							petSelect = {formikProps.values['pet']}
+							handleSelectPet = {(pet)=>formikProps.setFieldValue('pet', pet)}
+						/>
     					<FieldInput
    							formikProps = {formikProps}
-							placeholder="DisplayName"
+							placeholder="Displayname"
 							type='displayName'					
 						/>
     					<FieldInput
@@ -116,26 +124,10 @@ class SignUp extends Component{
 							type = "age"
 							keyboardType = {"phone-pad"}					
 						/>
-						<View style={styles.ctnSex}>
-							<View style={styles.sex}>
-								<Text>Male</Text>
-								<RadioButton
-          							value="male"
-          							color="blue"
-          							status={formikProps.values['sex']=== 'male' ? 'checked' : 'unchecked'}
-        							onPress={()=>formikProps.setFieldValue('sex', 'male')}
-        						/>
-        					</View>
-        					<View style={styles.sex}>
-        						<Text>Female</Text>
-        						<RadioButton
-          							value="female"
-          							color="pink"
-          							status={formikProps.values['sex']=== 'female' ? 'checked' : 'unchecked'}
-        							onPress={()=>formikProps.setFieldValue('sex', 'female')}
-        						/>
-        					</View>
-						</View>
+						<Groupsex 
+							formikProps = {formikProps}
+							handleSelect = {(sex)=>formikProps.setFieldValue('sex', sex)}
+						/>
 						<FieldInput
    							formikProps = {formikProps}
 							placeholder="Password"
@@ -195,15 +187,6 @@ const styles = StyleSheet.create({
 		marginTop:20,
 		alignItems:'center',
 		marginBottom:20
-	},
-	ctnSex:{
-		flexDirection:'row',
-		marginLeft:10
-	},
-	sex:{
-		flexDirection:'row',
-		alignItems:'center',
-		marginRight:20
 	}
 
 })

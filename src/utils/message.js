@@ -34,22 +34,11 @@ export class newMessage {
 }//patron de diseño builder para construir mis mensajes
 
 export const changeStatusMessage = (data,status,time)=>{
-
-	let newData = data.map((item,indice)=>(item.time ==time ? {...item,status:status} : item))
-
-	return newData;
+	return data.map((item,indice)=>(item.time ==time ? {...item,status:status} : item))
 }//me actualiza los estatus de los mensajes
 
 export const replaceMessage = (data,newMessage,_id)=>{
-	let newData = data.map((item,indice)=>{
-		if(item._id == _id)
-		{
-			item.message.unshift(newMessage);
-		}
-		return item;
-	})
-
-	return newData;
+	return data.map((item,indice)=>(item._id == _id ? item.message.unshift(newMessage) : item))
 }//me actualiza mis mensajes;
 
 export const includes = (data,_id)=>{
@@ -63,9 +52,8 @@ export const includes = (data,_id)=>{
 
 export const findChatId = (messages,id)=>{
 	for(let i=0;i<messages.length;i++)
-		{
-			if(messages[i]._id === id) return messages[i].message;
-		}
-
-		return [];
+	{
+		if(messages[i]._id === id) return messages[i].message;
+	}
+	return [];
 }//busca los chat por id de menesajes

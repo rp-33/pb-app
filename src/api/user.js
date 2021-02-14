@@ -18,8 +18,9 @@ export const verifiedEmail = (email)=>{
 	.catch((err) => {return err.response})
 }
 
-export const signup = (displayName,email,sex,age,password,avatar,pet,longitude,latitude)=>{
+export const signup = (petName,displayName,email,sex,age,password,avatar,pet,longitude,latitude)=>{
 	let formData = new FormData();
+	formData.append('petName',petName);
 	formData.append('displayName',displayName);
 	formData.append('email',email);
 	formData.append('sex',sex);
@@ -45,6 +46,7 @@ export const signup = (displayName,email,sex,age,password,avatar,pet,longitude,l
 }
 
 export const login = (email,password)=>{
+
 	return axios({
 		method:'post',
 		url:`${route}/login`,

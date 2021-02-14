@@ -28,6 +28,7 @@ import StepPasswordSuccess from '../views/recoverPassword/StepSuccess';
 import EditPet from '../views/EditPet';
 import Adoption from '../views/Adoption';
 import Comments from '../views/Comments';
+import Marketplace from '../views/Marketplace';
 import { Icon } from 'native-base';
 
 let db = new userDb();
@@ -37,6 +38,7 @@ const nameIcon = {
   lostPets : 'md-search',
   adoption : 'md-paw',
   myProfile: 'contact',
+  marketplace : 'cart'
 }
 
 const MessagesNavigator = createStackNavigator({
@@ -145,6 +147,13 @@ AdoptionNavigator.navigationOptions = ({ navigation }) => {
   return { tabBarVisible };
 };
 
+const MarketplaceNavigator = createStackNavigator({
+  Marketplace : {
+    screen : Marketplace,
+    navigationOptions : {headerShown: false}
+  }
+})
+
 const MyProfileNavigator = createStackNavigator({
   MyProfile : {
     screen: MyProfile,
@@ -187,6 +196,9 @@ const DashboardNavigator = createMaterialBottomTabNavigator({
     },
     adoption : {
       screen : AdoptionNavigator
+    },
+    marketplace : {
+      screen : MarketplaceNavigator
     },
     myProfile:{
       screen: MyProfileNavigator

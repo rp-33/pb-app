@@ -80,9 +80,9 @@ class SignupLocation extends Component{
         setLoading(true);
         try
         {
-            let {displayName,email,sex,password,pet,avatar,age} = navigation.state.params;
+            let {petName,displayName,email,sex,password,pet,avatar,age} = navigation.state.params;
             let {longitude,latitude} = this.state.location
-            let {status,data} = await signup(displayName,email,sex,age,password,avatar,pet,longitude,latitude);
+            let {status,data} = await signup(petName,displayName,email,sex,age,password,avatar,pet,longitude,latitude);
             if(status === 201)
             {
                 setAuth(data);
