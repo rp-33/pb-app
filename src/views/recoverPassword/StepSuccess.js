@@ -21,13 +21,13 @@ class StepSuccess extends Component{
       <Container>
           <View style={styles.center}>
             <LottieView 
-              style={{width: 150,alignSelf: 'center'}} 
+              style={styles.lottie} 
               source={require('../../assets/animations/success.json')} 
               autoPlay 
               loop = {false}
             />
             <H1 allowFontScalling style={styles.centerText}>Recovered password!!</H1>
-            <Text allowFontScalling style={styles.centerText}>can go to login</Text>
+            <Text allowFontScalling style={styles.centerText}>Can go to login</Text>
             <Button 
               onPress={this.handleLogin} 
               full 
@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
   ctn:{
     backgroundColor:'white',
 	},
+  lottie:{
+    width: 150,
+    alignSelf: 'center'
+  },
   center:{
 		marginHorizontal:10,
     flex:1,

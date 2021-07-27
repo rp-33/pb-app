@@ -8,8 +8,7 @@ import {
 	Form,
 	Button,
 	Text,
-	H1,
-	Toast
+	H1
 } from 'native-base';
 import {connect} from 'react-redux';
 import { Formik } from 'formik';
@@ -18,6 +17,7 @@ import FieldInput from '../../presentations/FieldInput';
 import { FargotPasswordSchema } from '../../constants';
 import {sendCodePassword} from '../../api/user';
 import { setLoading } from '../../actions/loading';
+import {setToast} from '../../actions/toast';
 
 class StepEmail extends Component{
 
@@ -25,7 +25,7 @@ class StepEmail extends Component{
 
 
 	_handleSubmit = async(values,actions)=>{
-		let {setLoading,navigation} = this.props;
+		let {setLoading,navigation,setToast} = this.props;
 		setLoading(true);
 		try
 		{
@@ -40,25 +40,12 @@ class StepEmail extends Component{
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })  
+				setToast({title:data.error,visible:true});
 			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })     
+			setToast({title:'Error',visible:true,type:'error'}); 
 		}
 		finally
 		{
@@ -129,7 +116,8 @@ const styles = StyleSheet.create({
 
 
 const mapDispatchToProps = dispatch => ({
-	setLoading: value => dispatch(setLoading(value))
+	setLoading: value => dispatch(setLoading(value)),
+	setToast : value => dispatch(setToast(value))
 });
 
 export default connect(null, mapDispatchToProps)(StepEmail);

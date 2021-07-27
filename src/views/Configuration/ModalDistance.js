@@ -8,8 +8,7 @@ import Modal from 'react-native-modal';
 import {
 	Icon,
 	Form,
-	Button,
-	Toast
+	Button
 } from 'native-base';
 import themeColor from '../../theme/color';
 import { Width } from '../../constants';

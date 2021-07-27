@@ -1,12 +1,8 @@
 import React,{Component} from 'react';
-import {StyleSheet} from 'react-native';
-import {
-	Container,
-	Toast
-}
-from 'native-base';
+import {StyleSheet,View} from 'react-native';
+import {Container} from 'native-base';
 import {connect} from 'react-redux';
-import SwipeCards from 'react-native-swipe-cards';
+import Swiper from 'react-native-deck-swiper';
 import CardItem from './CardItem';
 import Head from './Head';
 import NoMoreData from './NoMoreData';
@@ -15,11 +11,13 @@ import {
 	like,
 	disLike
 } from '../../api/user';
+import {setToast} from '../../actions/toast';
 
 class Search extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
+			match : false,
 			users : [],
 		}
 		this.sex = props.user.sex;
@@ -33,6 +31,10 @@ class Search extends Component{
 	}
 
 	componentDidUpdate(prevProps, prevState){
+		this._handleUpdate();
+	}
+
+	_handleUpdate(){
 		if(!this.props.user.isAuthenticated) return;
 
 		if(this.sex !=this.props.user.sex)
@@ -57,6 +59,7 @@ class Search extends Component{
 	_handleFindUser = async(sex,pet,location,distance)=>{
 		try
 		{
+			let {setToast} = this.props;
 			let {status,data} = await searchUsers(sex,pet,location,distance);
 			if(status === 200)
 			{
@@ -64,17 +67,14 @@ class Search extends Component{
 					users : data
 				})
 			}
+			else
+			{
+				setToast({title:data.error,visible:true});
+			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text:'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })  
+			setToast({title:'Error',visible:true,type:'Error'});
 		}
 	}
 
@@ -83,78 +83,47 @@ class Search extends Component{
 		return _id
 	}
 
-	handleNope = ({_id})=>{
+	_handleDislike = async({_id})=>{
 		try
 		{
-			disLike(_id)
-			.then((response)=>{
-				let {status,data} = response;
-				if(status!=201)
-				{
-					Toast.show({
-                		text: data.error,
-                		textStyle: { fontSize: 15 },
-                		buttonTextStyle: { color: '#000000', fontSize: 15 },
-                		buttonText: "OK",
-                		duration: 3000,
-                		type: "danger"
-            		})   
-				}
-			})
-			.catch((err)=>{
-				throw err;
-			})
+			let {setToast} = this.props;
+			let {status,data} = await disLike(_id)
+			if(status !==201)
+			{
+				setToast({title:data.error,visible:true});
+			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })   
+			setToast({title:data.error,visible:true,type:'Error'}); 
 		}
 	}
 
-	handleYup = ({_id})=>{
+	_handleLike = async({_id})=>{
 		try
 		{
-			like(_id,false)
-			.then((response)=>{
-				let {status,data} = response;
-				if(status===201)
+			let {setToast} = this.props;
+			let {status,data} = await like(_id,false);
+			console.log(data,status)
+			if(status ===201)
+			{
+
+				if(data.message ==="match")
 				{
-					if(data.message!="match") return;//like
-					
-				}
-				else
-				{
-					Toast.show({
-                		text: data.error,
-                		textStyle: { fontSize: 15 },
-                		buttonTextStyle: { color: '#000000', fontSize: 15 },
-                		buttonText: "OK",
-                		duration: 3000,
-               			type: "danger"
-            		}) 
-				}
-			})
-			.catch((err)=>{
-				throw err;
-			})
+					this.setState({
+						match : true
+					})
+					setToast({title:'Congratulations user match',visible:true});
+				} 
+			}
+			else
+			{
+				setToast({title:data.error,visible:true});
+			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })    
+			setToast({title:'Error',visible:true,type:'Error'});    
 		}
 	}
 	
@@ -167,7 +136,10 @@ class Search extends Component{
     	}
 	}
 
-	handleNavigation = routeName=>this.props.navigation.push(routeName);
+	handleNavigation = routeName=>{
+		if(routeName === 'Match') this.setState({match:false});
+		this.props.navigation.push(routeName);
+	}
 
 	handleProfile = (_id,displayName,avatar)=>{
 
@@ -179,29 +151,32 @@ class Search extends Component{
 	render(){
 		return(
 			<Container>
-
 				<Head 
 					handleNavigation = {this.handleNavigation}
+					match = {this.state.match}
 				/>
-				<SwipeCards
-        			cards={this.state.users}
-        			renderCard={(item) => (
-        				<CardItem 
-        					{...item} 
-        					myLocation = {this.props.user.location}
-        					handleProfile = {this.handleProfile}
-        				/>
-        			)}
-        			renderNoMoreCards={() => <NoMoreData />}
-        			yupText="LIKE"
-        			nopeText="DISLIKE"
-        			handleYup={this.handleYup}
-        			handleNope={this.handleNope} 
-        			cardRemoved={this.userRemoved} 	
-        			yupStyle = {{marginRight:20}}
-        			nopeStyle={{marginLeft:20}}		
-      			/>
-
+				{this.state.users.length>0
+				&&
+				<View style={styles.card}>
+					<Swiper
+	            	cards={this.state.users}
+	            	renderCard={(item) => {
+                	   return (
+                	   		<CardItem 
+        						item = {item}
+        						myLocation = {this.props.user.location}
+        						handleProfile = {this.handleProfile}
+        					/>
+                		)
+            		}}
+            		onSwipedLeft = {(index,item)=>this._handleDislike(item)}
+            		onSwipedRight = {(index,item)=>this._handleLike(item)}
+            		cardIndex={0}
+            		stackSize= {7}
+            		backgroundColor = {'transparent'}
+               		/>
+                </View>
+            	}
 			</Container>
 		)
 	}
@@ -211,8 +186,7 @@ const styles = StyleSheet.create({
 	card:{
 		flex:1,
 		justifyContent:'center',
-		alignItems:'center',
-        marginBottom:30
+		alignItems:'center'
 	},
 })
 
@@ -220,4 +194,8 @@ const mapStateToProps = state=>({
 	user : state.user
 })
 
-export default connect(mapStateToProps,null)(Search);
+const mapDispatchToProps = dispatch => ({
+    setToast : value => dispatch(setToast(value))
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(Search);

@@ -49,8 +49,8 @@ export const ChangeBiographySchema = Yup.object().shape({
         .required('Biography is required'),
 });
 
-export const ChangeDisplayNameSchema = Yup.object().shape({
-    displayName: Yup.string()
+export const ChangePetNameSchema = Yup.object().shape({
+    petName: Yup.string()
         .required('Field is required'),
 });
 

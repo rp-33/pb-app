@@ -5,8 +5,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import {
-	Icon,
-	Toast
+	Icon
 } from 'native-base';
 import { Switch } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -33,7 +32,7 @@ class Notification extends Component{
 			let {status,data} = await editNotifications(value);
 			if(status===201)
 			{
-				this.props.handleNotifications(value);
+				this.props.handleNotifications(value,201);
 			}
 			else
 			{
@@ -42,14 +41,7 @@ class Notification extends Component{
 						value : !prevState.value
 					}
 				},()=>{
-					Toast.show({
-                		text: data.error,
-                		textStyle: { fontSize: 15  },
-                		buttonTextStyle: { color: '#000000', fontSize: 15 },
-                		buttonText: "Ok",
-                		duration: 3000,
-                		type: "danger"
-            		})
+					this.props.handleNotifications(data.error,400);
             	})
 			}
 		}
@@ -60,14 +52,7 @@ class Notification extends Component{
 					value : !prevState.value
 				}
 			},()=>{
-				Toast.show({
-                	text: 'Error',
-                	textStyle: { fontSize: 15  },
-                	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "Ok",
-                	duration: 3000,
-                	type: "danger"
-            	})
+				this.props.handleNotifications('Error',500);
             })
 		}
 	}

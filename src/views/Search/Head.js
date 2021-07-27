@@ -15,7 +15,7 @@ import {
 import themeColor from '../../theme/color';
 import PropTypes from 'prop-types';
 
-const Head = ({title,handleNavigation}) => (
+const Head = ({title,handleNavigation,match}) => (
 	<Header noShadow style={{borderBottomWidth: 0,backgroundColor: 'white'}} iosBarStyle='dark-content' androidStatusBarColor='white'>
         <Left style={Platform.OS === 'android' ? {flex:1} : null}>
             <Button 
@@ -39,12 +39,11 @@ const Head = ({title,handleNavigation}) => (
             }
         </Body>
         <Right style={Platform.OS === 'android' ? {flex:1} : null} >
-        	<Button 
-        		primary 
+        	<Button               
         		transparent
         		onPress = {()=>handleNavigation('Match')}
         	>
-                <Icon name="md-heart-empty" type='Ionicons'/>
+                <Icon style={{color: match ? 'red' : 'black'}} name="md-heart-empty" type='Ionicons'/>
             </Button>
         </Right>
     </Header>

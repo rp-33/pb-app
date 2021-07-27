@@ -38,7 +38,7 @@ const ItemMatch = ({item,handleNavigation})=>{
 				}
 				<Image source={{uri: item.user.avatar}} style={styles.image} />
 				<View style={styles.footer}>
-					<Text style={styles.name}>{item.user.displayName}</Text>
+					<Text style={styles.name}>{item.user.petName}</Text>
 				</View>
 			</LinearGradient>
 		</TouchableOpacity>
@@ -50,7 +50,7 @@ ItemMatch.propTypes = {
 	item : PropTypes.shape({
 		user :  PropTypes.shape({
 			_id : PropTypes.string.isRequired,
-			displayName: PropTypes.string.isRequired,
+			petName: PropTypes.string.isRequired,
 			avatar : PropTypes.string.isRequired
 		})
 	}).isRequired

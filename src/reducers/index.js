@@ -5,10 +5,12 @@ import Nav from './nav';
 import user from './user';
 import loading from './loading';
 import messages  from './messages';
+import toast from './toast';
 
 export default createStore(combineReducers({
     navState: Nav,
     user,
     loading,
-    messages
+    messages,
+    toast
 }),applyMiddleware(thunk,promise))

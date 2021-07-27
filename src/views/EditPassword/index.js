@@ -9,14 +9,14 @@ import {
 	Button,
 	Form,
 	Text,
-	H1,
-	Toast
+	H1
 } from 'native-base';
 import { Formik } from 'formik';
 import HeadBack from '../../presentations/HeadBack';
 import { ChangePasswordSchema } from '../../constants';
 import FieldInput from '../../presentations/FieldInput';
 import { setLoading } from '../../actions/loading';
+import {setToast} from '../../actions/toast';
 import {editPassword} from '../../api/user';
 
 class EditPassword extends Component{
@@ -24,7 +24,7 @@ class EditPassword extends Component{
 	handleBack = ()=>this.props.navigation.goBack();
 
 	_handleSave = async(values,actions)=>{
-		const {setLoading } = this.props;
+		const {setLoading,setToast} = this.props;
 		setLoading(true);
 		try{
 			let {password} = values;
@@ -32,37 +32,16 @@ class EditPassword extends Component{
 			if(status === 201)
 			{
 				actions.resetForm();
-				Toast.show({
-                	text: 'saved successfully',
-                	textStyle: { fontSize: 15 },
-       	        	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "OK",
-               		duration: 3000
-            	})   
+				setToast({title:'Saved successfully',visible:true});
 			}
 			else
 			{
-				Toast.show({
-                	text: data.error,
-                	textStyle: { fontSize: 15 },
-       	        	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "OK",
-               		duration: 3000,
-               		type: "danger"
-            	})      
+				setToast({title:data.error,visible:true});     
 			}
-
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
+			setToast({title:'Error',visible:true,type:'error'});      
 		}
 		finally
         {
@@ -142,7 +121,8 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = dispatch => ({
-    setLoading: value => dispatch(setLoading(value))
+    setLoading: value => dispatch(setLoading(value)),
+    setToast : value => dispatch(setToast(value))
 })
 
 

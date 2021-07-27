@@ -17,6 +17,8 @@ import {geolocation} from '../../services/geolocation';
 import {signup} from '../../api/user';
 import { setAuth } from '../../actions/user';
 import { setLoading } from '../../actions/loading';
+import {setToast} from '../../actions/toast';
+
 
 class SignupLocation extends Component{
 	constructor(props){
@@ -40,6 +42,7 @@ class SignupLocation extends Component{
 
         if(granted == 'authorized' || granted == 'granted'){
         	let coords = await geolocation();
+            let {setToast} = this.props
         	if(coords.latitude && coords.longitude)
         	{
         		this.setState({
@@ -51,32 +54,18 @@ class SignupLocation extends Component{
         	}
           	else
           	{
-          		Toast.show({
-                	text: 'Error',
-                	textStyle: { fontSize: 15  },
-                	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "Ok",
-                	duration: 3000,
-                	type:'danger'
-            	}) 
+                setToast({title:'must give the location permissions',visible:true,type:'error'}); 
           	}
          
         }
         else if(granted == 'denied')
         {
- 			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type:'danger'
-            }) 
+            setToast({title:'must give the location permissions',visible:true,type:'error'}); 
         }
     }
 
     handleSignup = async ()=>{
-        let { setAuth, setLoading,navigation} = this.props;
+        let { setAuth, setLoading,navigation,setToast} = this.props;
         setLoading(true);
         try
         {
@@ -86,30 +75,17 @@ class SignupLocation extends Component{
             if(status === 201)
             {
                 setAuth(data);
-                navigation.reset([navigation.navigate({routeName:'Dashboard'})],0);
+                navigation.navigate('Dashboard');
             }
             else
             {
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })      
+                setToast({title:data.error || 'Path not found',visible:true,type:'error'});  
             }
 
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
+            setToast({title:'Error',visible:true,type:'error'});     
         }
         finally
         {
@@ -163,7 +139,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => ({
     setLoading: value => dispatch(setLoading(value)),
-    setAuth: value => dispatch(setAuth(value))
+    setAuth: value => dispatch(setAuth(value)),
+    setToast : value => dispatch(setToast(value))
 });
 
 export default connect(null, mapDispatchToProps)(SignupLocation);

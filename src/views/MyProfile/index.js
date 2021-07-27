@@ -7,12 +7,10 @@ import {
 import {
 	Container,
 	Content,
-	Toast,
 	H3,
     Text,
     Icon
-}
-from 'native-base';
+} from 'native-base';
 import {connect} from 'react-redux';
 import Head from './Head';
 import Avatars from './Avatars';
@@ -21,10 +19,11 @@ import ModalAvatar from './ModalAvatar';
 import ModalFamily from './ModalFamily';
 import ModalBiography from './ModalBiography';
 import ModalHobbie from './ModalHobbie';
-import ModalDisplayname from './ModalDisplayname';
+import ModalPetname from './ModalPetname';
 import TextBiography from './TextBiography';
 import Hobbies from './Hobbies';
-import { setLoading } from '../../actions/loading';
+import {setLoading} from '../../actions/loading';
+import {setToast} from '../../actions/toast';
 import { 
 	setAvatar,
 	setFamily,
@@ -33,7 +32,7 @@ import {
     deleteHobbie,
     deletePicture,
     deleteFamily,
-    setDisplayName
+    setPetName
 } from '../../actions/user';
 import { 
 	editAvatar,
@@ -43,7 +42,7 @@ import {
     deletehobbie,
     deletepicture,
     deletefamily,
-    editDisplayName
+    editPetName
 } from '../../api/user';
 
 
@@ -56,7 +55,7 @@ class MyProfile extends Component{
 			modalFamilies : false,
             modalBiography : false,
             modalHobbie : false,
-            modalDisplayname : false
+            modalPetname : false
 		}
 	}
 
@@ -69,43 +68,23 @@ class MyProfile extends Component{
     };
 
     setAvatar = async(avatar)=>{
-    	let { setAvatar, setLoading} = this.props;
+    	let {setAvatar,setLoading,setToast} = this.props;
         setLoading(true);
         try{            
             let { status, data } = await editAvatar(avatar)
             if(status === 201)
             {	
                 setAvatar(data.avatar);
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'saved successfully',visible:true});
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {      
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {   
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+             setToast({title:'Error',visible:true,type:'Error'});  
         }
         finally
         {
@@ -114,43 +93,23 @@ class MyProfile extends Component{
     }
 
     setFamily = async(avatar)=>{
-    	let { setFamily, setLoading} = this.props;
+    	let { setFamily, setLoading,setToast} = this.props;
         setLoading(true);
         try{            
             let { status, data } = await saveFamily(avatar)
             if(status === 201)
             {	
                 setFamily(data.avatar);
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'saved successfully',visible:true});                              
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {    
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+             setToast({title:'Error',visible:true,type:'Error'});
         }
         finally
         {
@@ -159,43 +118,23 @@ class MyProfile extends Component{
     }
 
     setBiography = async(values, actions)=>{
-        let { setLoading, setBiography} = this.props;
+        let { setLoading, setBiography,setToast} = this.props;
         setLoading(true);
         try{            
             let { status, data } = await editBiography(values.biography)
             if(status === 201)
             {   
                 setBiography(values.biography);
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'saved successfully',visible:true});      
             }
             else
             {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+                setToast({title:data.error,visible:true});                  
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'Error'});   
         }
         finally
         {
@@ -204,54 +143,28 @@ class MyProfile extends Component{
     }
 
     setHobbie = async(values, actions)=>{
-        let { setLoading,setHobbie,user} = this.props;
+        let { setLoading,setHobbie,user,setToast} = this.props;
         setLoading(true);
         if([...user.hobbies].includes(values.hobbie.toLowerCase())){
-            Toast.show({
-                text: 'hobby already exists',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000
-            }) 
-
+            setToast({title:'hobby already exists',visible:true});   
             return  setLoading(false);
         }
         try{            
             let { status, data } = await saveHobbie(values.hobbie)
             if(status === 201)
             {   
+
                 setHobbie(data.hobbie);
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'saved successfully',visible:true});
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {            
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'error'});  
         }
         finally
         {
@@ -260,43 +173,24 @@ class MyProfile extends Component{
     }
 
     handleDeleteHobbie = async(hobbie)=>{
-        let { setLoading,deleteHobbie} = this.props;
+        let { setLoading,deleteHobbie,setToast} = this.props;
         setLoading(true)
         try{            
             let { status, data } = await deletehobbie(hobbie)
             if(status === 201)
             {   
                 deleteHobbie(hobbie);
-                Toast.show({
-                    text: 'Delete successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'Delete successfully',visible:true});  
+               
             }
             else
             {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'error'});  
         }
         finally
         {
@@ -306,43 +200,23 @@ class MyProfile extends Component{
     }
 
     handleDeletePicture = async(picture)=>{
-        let { setLoading,deletePicture} = this.props;
+        let { setLoading,deletePicture,setToast} = this.props;
         setLoading(true)
         try{            
             let { status, data } = await deletepicture(picture)
             if(status === 201)
             {   
                 deletePicture(picture);
-                Toast.show({
-                    text: 'Delete successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'Delete successfully',visible:true});  
             }
             else
             {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+                setToast({title:data.error,visible:true});                 
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'Error'});  
         }
         finally
         {
@@ -351,43 +225,23 @@ class MyProfile extends Component{
     }
 
     handleDeleteFamily = async(picture)=>{
-        let { setLoading,deleteFamily} = this.props;
+        let { setLoading,deleteFamily,setToast} = this.props;
         setLoading(true);
         try{            
             let { status, data } = await deletefamily(picture)
             if(status === 201)
             {   
                 deleteFamily(picture);
-                Toast.show({
-                    text: 'Delete successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'Delete successfully',visible:true}); 
             }
             else
             {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'error'});  
         }
         finally
         {
@@ -395,44 +249,24 @@ class MyProfile extends Component{
         }
     }
 
-    setDisplayname = async(values, actions)=>{
-        let { setLoading, setDisplayName} = this.props;
+    setPetname = async(values, actions)=>{
+        let { setLoading, setPetName,setToast} = this.props;
         setLoading(true);
         try{            
-            let { status, data } = await editDisplayName(values.displayName)
+            let { status, data } = await editPetName(values.petName)
             if(status === 201)
-            {   
-                setDisplayName(values.displayName);
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+            { 
+                setPetName(values.petName);
+                setToast({title:'Saved successfully',visible:true}); 
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {     
+                setToast({title:data.error,visible:true});                
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+            setToast({title:'Error',visible:true,type:'error'});
         }
         finally
         {
@@ -448,7 +282,7 @@ class MyProfile extends Component{
 			pictures,
 			families,
 			biography,
-            displayName,
+            petName,
             hobbies
 		} = this.props.user;
 		return(
@@ -460,10 +294,10 @@ class MyProfile extends Component{
 				<Content>
                     <TouchableOpacity 
                         style = {styles.ctnText}
-                        onPress ={this.handleModal('modalDisplayname')}
+                        onPress ={this.handleModal('modalPetname')}
                     >
                         <H3 style={styles.capitalize}>
-                            {displayName}
+                            {petName}
                         </H3>
                         <Icon 
                             name="md-create" 
@@ -539,12 +373,12 @@ class MyProfile extends Component{
                 />
                 }
 
-                {this.state.modalDisplayname &&
-                <ModalDisplayname
-                    modal = {this.state.modalDisplayname}
-                    handleModal = {this.handleModal('modalDisplayname')}
-                    setDisplayname = {this.setDisplayname}
-                    displayName = {displayName}
+                {this.state.modalPetname &&
+                <ModalPetname
+                    modal = {this.state.modalPetname}
+                    handleModal = {this.handleModal('modalPetname')}
+                    setPetname = {this.setPetname}
+                    petName = {petName}
                 />
                 }
 			</Container>
@@ -580,7 +414,8 @@ const mapDispatchToProps = dispatch => ({
     deleteHobbie : value =>dispatch(deleteHobbie(value)),
     deletePicture : value =>dispatch(deletePicture(value)),
     deleteFamily : value =>dispatch(deleteFamily(value)),
-    setDisplayName : value =>dispatch(setDisplayName(value))
+    setPetName : value =>dispatch(setPetName(value)),
+    setToast : value => dispatch(setToast(value))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(MyProfile);

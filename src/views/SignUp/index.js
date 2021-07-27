@@ -11,8 +11,7 @@ import {
 	Button,
 	Text,
 	H1,
-	Content,
-	Toast
+	Content
 } from 'native-base';
 import {connect} from 'react-redux';
 import { Formik } from 'formik';
@@ -25,6 +24,7 @@ import { SignUpSchema } from '../../constants';
 import themeColor from '../../theme/color';
 import {verifiedEmail} from '../../api/user';
 import { setLoading } from '../../actions/loading';
+import {setToast} from '../../actions/toast';
 
 class SignUp extends Component{
 
@@ -33,7 +33,7 @@ class SignUp extends Component{
 	}
 
 	_handleSignup = async (values,actions)=>{
-		let { setLoading,navigation} = this.props;
+		let { setLoading,navigation,setToast} = this.props;
         setLoading(true);
 		try
 		{	
@@ -45,26 +45,13 @@ class SignUp extends Component{
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })      
+				setToast({title:data.error || 'Path not found',visible:true});     
 			}
 
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
+			setToast({title:'Error',visible:true,type:'error'}); 
 		}
 		finally
 		{
@@ -192,7 +179,8 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = dispatch => ({
-	setLoading: value => dispatch(setLoading(value))
+	setLoading: value => dispatch(setLoading(value)),
+	setToast : value => dispatch(setToast(value))
 });
 
 export default connect(null, mapDispatchToProps)(SignUp);

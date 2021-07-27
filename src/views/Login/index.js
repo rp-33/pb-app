@@ -11,8 +11,7 @@ import {
 	Form,
 	Button,
 	Text,
-	H1,
-	Toast
+	H1
 } from 'native-base';
 import { Formik } from 'formik';
 import HeadBack from '../../presentations/HeadBack';
@@ -20,17 +19,16 @@ import FieldInput from '../../presentations/FieldInput';
 import { SignInSchema } from '../../constants';
 import themeColor from '../../theme/color';
 import {login} from '../../api/user';
-import { setAuth } from '../../actions/user';
-import { setLoading } from '../../actions/loading';
+import {setAuth} from '../../actions/user';
+import {setLoading} from '../../actions/loading';
+import {setToast} from '../../actions/toast';
 
 class Login extends Component{
 
-	_handleBack = ()=>{
-		this.props.navigation.goBack();
-	}
+	_handleBack = ()=>this.props.navigation.goBack();
 
 	_handleLogin = async(values,actions)=>{
-		let { setAuth, setLoading,navigation} = this.props;
+		let { setAuth, setLoading,setToast,navigation} = this.props;
         setLoading(true);
 		try
 		{	
@@ -44,26 +42,13 @@ class Login extends Component{
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })      
+				setToast({title:data.error,visible:true});
 			}
 
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
+			setToast({title:'Error',visible:true,type:'error'}); 
 		}
 		finally
 		{
@@ -164,6 +149,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => ({
 	setLoading: value => dispatch(setLoading(value)),
     setAuth: value => dispatch(setAuth(value)),
+    setToast : value => dispatch(setToast(value))
 });
 
 export default connect(null, mapDispatchToProps)(Login);

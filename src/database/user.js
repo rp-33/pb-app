@@ -15,7 +15,25 @@ class userDb{
 	get(){
 		let user = Database.objects('User')[0]
 		if(!user) return false;
-		return user
+		return {
+			_id : user._id,
+			token:user.token,
+			email:user.email,
+			displayName:user.displayName,
+			petName:user.petName,
+			avatar:user.avatar,
+			distance:user.distance,
+			sex:user.sex,
+			notifications:user.notifications,
+			isAuthenticated:user.isAuthenticated,
+			pictures:user.pictures,
+        	biography:user.biography,
+        	hobbies:user.hobbies,
+        	families:user.families,
+        	location:user.location,
+        	age:user.age,
+        	pet:user.pet
+		}
 	}
 
 	logout(){
@@ -24,9 +42,9 @@ class userDb{
 		})
 	}
 
-	setDisplayName (displayName){
+	setPetName (petName){
 		Database.write(() => {
-			this.user.displayName = displayName;
+			this.user.petName = petName;
 		})
 	}
 

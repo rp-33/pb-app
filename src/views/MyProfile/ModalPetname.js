@@ -16,14 +16,14 @@ import {
 import themeColor from '../../theme/color';
 import { Width } from '../../constants';
 import { Formik } from 'formik';
-import { ChangeDisplayNameSchema } from '../../constants';
+import { ChangePetNameSchema } from '../../constants';
 import FieldInput from '../../presentations/FieldInput';
 
-const ModalDisplayname = ({ modal, handleModal,setDisplayname,displayName }) => {
+const ModalPetname = ({ modal, handleModal,setPetname,petName }) => {
     
-    const handleDisplayname = (values, actions) => { 
+    const handlePetname = (values, actions) => { 
         handleModal(); 
-        setDisplayname(values, actions);
+        setPetname(values, actions);
     };
 
     return (
@@ -38,16 +38,16 @@ const ModalDisplayname = ({ modal, handleModal,setDisplayname,displayName }) => 
                     <Text style={{fontSize:15,textAlign:'center'}}>Pet's name.</Text>
                 </View>
                 <Formik
-                    initialValues={{ displayName }}
-                    onSubmit={(values, actions) => handleDisplayname(values, actions)}
-                    validationSchema = {ChangeDisplayNameSchema}
+                    initialValues={{ petName}}
+                    onSubmit={(values, actions) => handlePetname(values, actions)}
+                    validationSchema = {ChangePetNameSchema}
                 >
                     {formikProps => (
                         <Form style={{paddingHorizontal:10, marginTop:5}}>
                            <FieldInput
                                 formikProps = {formikProps}
                                 placeholder="pet's name"
-                                type = "displayName"                      
+                                type = "petName"                      
                             />
                             <Button 
                                 style={{marginTop: 15}} 
@@ -66,7 +66,7 @@ const ModalDisplayname = ({ modal, handleModal,setDisplayname,displayName }) => 
     )
 };
 
-ModalDisplayname.proptypes = {
+ModalPetname.proptypes = {
     modal: PropTypes.bool.isRequired,
     handleModal : PropTypes.func.isRequired,
     setDisplayname : PropTypes.func.isRequired,
@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ModalDisplayname;
+export default ModalPetname;

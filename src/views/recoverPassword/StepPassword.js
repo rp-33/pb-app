@@ -9,55 +9,40 @@ import {
 	Button,
 	Form,
 	Text,
-	H1,
-	Toast
+	H1
 } from 'native-base';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import HeadBack from '../../presentations/HeadBack';
-import { ChangePasswordSchema } from '../../constants';
+import {ChangePasswordSchema} from '../../constants';
 import FieldInput from '../../presentations/FieldInput';
-import { setLoading } from '../../actions/loading';
-import {editPassword} from '../../api/user';
+import {setLoading} from '../../actions/loading';
+import {newPassword} from '../../api/user';
+import {setToast} from '../../actions/toast';
 
 class StepPassword extends Component{
 
 	handleBack = ()=>this.props.navigation.navigate('Login');
 
 	_handleSave = async(values,actions)=>{
-		const {setLoading,navigation } = this.props;
+		const {setLoading,navigation,setToast} = this.props;
 		setLoading(true);
 		try{
 			let {token} = navigation.state.params;
 			let {password} = values;
-			let {status,data} = await editPassword(password,token);
+			let {status,data} = await newPassword(password,token);
 			if(status === 201)
 			{
-				navigation.push('StepPasswordSuccess')   
+				navigation.push('StepPasswordSuccess');   
 			}
 			else
 			{
-				Toast.show({
-                	text: data.error,
-                	textStyle: { fontSize: 15 },
-       	        	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "OK",
-               		duration: 3000,
-               		type: "danger"
-            	})      
+				setToast({title:data.error,visible:true});     
 			}
-
 		}
 		catch(err)
 		{
 			console.log(err)
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })      
+			setToast({title:'Error',visible:true,type:'error'});
 		}
 		finally
         {
@@ -136,7 +121,8 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = dispatch => ({
-    setLoading: value => dispatch(setLoading(value))
+    setLoading: value => dispatch(setLoading(value)),
+    setToast : value => dispatch(setToast(value))
 })
 
 

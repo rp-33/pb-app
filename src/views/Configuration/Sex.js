@@ -4,7 +4,6 @@ import {
 	StyleSheet
 } from 'react-native';
 import {
-	Toast,
 	Card, 
 	CardItem,
 	Text,
@@ -30,38 +29,23 @@ class Sex extends Component{
 			let {status,data} = await editSex(value);
 			if(status===201)
 			{
-				this.props.handleSex(value)
+				this.props.handleSex(value,201)
 			}
 			else
 			{
 				this.setState({
 					sex : value=='male' ? 'female' :  'male'
 				},()=>{
-					Toast.show({
-                		text: data.error,
-                		textStyle: { fontSize: 15  },
-                		buttonTextStyle: { color: '#000000', fontSize: 15 },
-                		buttonText: "Ok",
-                		duration: 3000,
-                		type: "danger"
-            		})
+					this.props.handleSex(data.error,400)
             	})
 			}
 		}
 		catch(err)
 		{
-			console.log(err)
 			this.setState({
 				sex : value=='male' ? 'female' :  'male'
 			},()=>{
-				Toast.show({
-               		text: 'Error',
-               		textStyle: { fontSize: 15  },
-               		buttonTextStyle: { color: '#000000', fontSize: 15 },
-              		buttonText: "Ok",
-               		duration: 3000,
-               		type: "danger"
-            	})
+				this.props.handleSex('Error',500)
             })
 		}
 	}

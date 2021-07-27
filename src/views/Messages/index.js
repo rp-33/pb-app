@@ -1,33 +1,26 @@
 import React,{Component} from 'react';
 import {FlatList} from 'react-native';
-import {
-	Container,
-	Toast
-}
-from 'native-base';
+import {Container} from 'native-base';
 import {connect} from 'react-redux';
 import Head from './Head';
 import Loading from './Loading';
 import Chat from './Chat';
 import {findMessages} from '../../api/user';
-import {
-	addToMessage,
-	removeToMessage
-} from '../../actions/messages';
+import {addToMessage,removeToMessage} from '../../actions/messages';
+import {setToast} from '../../actions/toast';
 
 class Messages extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
 			loading : true,
-			page : 0,
 			delete : [],
 			noData : false
 		}
 	}
 
 	componentDidMount(){
-		this._findMessages(this.state.page);
+		this._findMessages(this.props.messages.length);
 	}
 
 	handleBack = ()=>this.props.navigation.navigate('Search');
@@ -35,30 +28,23 @@ class Messages extends Component{
 	_findMessages = async(page)=>{
 		try
 		{
+			let {addToMessage,setToast} = this.props;
 			this.setState({loading:true});
-			let {status,data} = await findMessages(this.props.messages.length);
+			let {status,data} = await findMessages(page);
 			if(status ===200)
 			{
 				if(data.length===0) return this.setState({noData:true});
-				this.props.addToMessage(data,this.state.page);
-				this.setState(prevState=>{
-					return{
-						page : prevState.page + 1
-					}
-				})
-				
+				this.props.addToMessage(data,page);
+			}
+			else
+			{
+				this.setState({noData:true});
+				setToast({title:data.error,visible:true});
 			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type:'danger'
-            }) 
+			setToast({title:'Error',visible:true,type:'error'});
 		}
 		finally
 		{
@@ -69,7 +55,7 @@ class Messages extends Component{
 	}
 
 	handleLoadMore = ()=>{
-		if(!this.state.noData) this._findMessages(this.state.page);
+		if(!this.state.noData) this._findMessages(this.props.messages.length);
 	}
 
 	_selectChat = (_id)=>{
@@ -121,8 +107,8 @@ class Messages extends Component{
 				/>
 				<FlatList
                     data = {this.orderBy(this.props.messages)}
-                    keyExtractor={(item, index) => item._id}
-                    onEndReached={this.handleLoadMore}
+                    keyExtractor={(item, index) => item._id}onEndReached={this.state.noData ? null : this.handleLoadMore}
+                    onEndReached={this.state.noData ? null : this.handleLoadMore}
           			onEndReachedThreshold={0.2}
           			initialNumToRender={20}
           			ListFooterComponent = {
@@ -151,7 +137,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     addToMessage: (messages,page) => dispatch(addToMessage(messages,page)),
-    removeToMessage : (values)=>dispatch(removeToMessage(values))
+    removeToMessage : (values)=>dispatch(removeToMessage(values)),
+    setToast : value => dispatch(setToast(value))
 })
 
 

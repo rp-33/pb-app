@@ -15,7 +15,10 @@ import PropTypes from 'prop-types'
 let {width,height} = Dimensions.get('window'),
 	SCREEN_WIDTH  = (width - 20) /2;
 
-const CardItem = ({_id,avatar,displayName,pictures,location,myLocation,handleProfile})=>{
+const CardItem = ({item,myLocation,handleProfile})=>{
+
+	let {_id,avatar,petName,pictures,location} = item;
+	
 	const images = [avatar,...pictures];
 	const [position,setPosition] = useState(0);
 
@@ -41,7 +44,7 @@ const CardItem = ({_id,avatar,displayName,pictures,location,myLocation,handlePro
 	return(
 		<View style={styles.container}>
 			<View style={[styles.badge,{top:15,left:10,backgroundColor:themeColor.primary}]}>
-				<Text style={styles.badgeText}>{displayName} {distance(myLocation,location.coordinates)} near you</Text>
+				<Text style={styles.badgeText}>{petName} {distance(myLocation,location.coordinates)} near you</Text>
 			</View>
 			<TouchableOpacity 
 				activeOpacity = {1}
@@ -58,7 +61,7 @@ const CardItem = ({_id,avatar,displayName,pictures,location,myLocation,handlePro
 				/>
 			</TouchableOpacity>
 			<TouchableOpacity 
-				onPress = {()=>handleProfile(_id,displayName,avatar)}
+				onPress = {()=>handleProfile(_id,petName,avatar)}
 				style={[styles.badge,{bottom:-15,backgroundColor:'#e2943a'}]}>
 				<Text style={styles.badgeText}>See profile</Text>
 			</TouchableOpacity>
@@ -68,7 +71,7 @@ const CardItem = ({_id,avatar,displayName,pictures,location,myLocation,handlePro
 
 CardItem.propTypes = {
 	avatar : PropTypes.string.isRequired,
-	displayName : PropTypes.string.isRequired,
+	petName : PropTypes.string.isRequired,
 	pictures : PropTypes.array.isRequired,
 	location : PropTypes.object.isRequired,
 	myLocation : PropTypes.object.isRequired
@@ -83,16 +86,11 @@ const styles = StyleSheet.create({
 		height : height - 200,
 		borderWidth:1,
 		borderColor:'#c7c7c7',
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 0,
-		},
-		shadowOpacity: 0.25,
 		shadowRadius: 0.84,
 		elevation: 2,
 		position:'relative',
-		marginBottom:30,
+		marginTop:-40,
+		backgroundColor:'white'
 	},
 	ctnAvatar: {
 		width: '100%',

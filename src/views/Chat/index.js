@@ -7,11 +7,7 @@ import {
 	Text,
 	KeyboardAvoidingView
 } from 'react-native';
-import {
-	Container,
-	Toast
-}
-from 'native-base';
+import {Container} from 'native-base';
 import Head from './Head';
 import InputChat from './InputChat';
 import ChatBubble from './ChatBubble';
@@ -38,7 +34,6 @@ class Chat extends Component{
 		this.state = {
 			messages : findChatId(this.props.messages,this._id),
 			modalBottom : false,
-			page : 0,
 			loading : true,
 			noData : false
 		}
@@ -77,8 +72,7 @@ class Chat extends Component{
 
 				this.setState(prevState=>{
 					return{
-						messages: page === 0 ? data : [...prevState.messages,...data],
-						page : prevState.page + 1
+						messages: page === 0 ? data : [...prevState.messages,...data]
 					}
 				})
 			}
@@ -221,7 +215,7 @@ class Chat extends Component{
 		return(
 			<Container>
 				<Head 
-					displayName = {this.user.displayName}
+					displayName = {this.user.petName}
 					avatar = {this.user.avatar}
 					handleBack = {this.handleBack}
 					handleProfile = {this.handleProfile}
@@ -275,7 +269,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    updateToMessage: (_id,message,user) => dispatch(updateToMessage(_id,message,user))
+    updateToMessage: (_id,message,user) => dispatch(updateToMessage(_id,message,user)),
+    setToast : value => dispatch(setToast(value))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Chat);

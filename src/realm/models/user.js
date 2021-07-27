@@ -6,6 +6,7 @@ const UserModel = {
 		token : 'string',
 		email : 'string',
 		displayName : 'string',
+		petName : 'string',
 		avatar : 'string',
 		distance :'int',
 		sex : 'string',

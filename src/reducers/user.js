@@ -9,7 +9,7 @@ import {
 	deleteHobbie,
 	deletePicture,
 	deleteFamily,
-	setDisplayName,
+	setPetName,
 	setLogout,
 	setDistance,
 	setSex,
@@ -25,6 +25,7 @@ let initUser = {
 	token : '',
 	email : '',
 	displayName : '',
+	petName : '',
 	avatar : null,
 	distance : 50,
 	isAuthenticated : false,
@@ -40,6 +41,7 @@ let initUser = {
 }
 
 const initialState = db.get() || initUser;
+
 
 export default (state = initialState, action) => {
     switch (action.type) {
@@ -65,11 +67,11 @@ export default (state = initialState, action) => {
 				...state,
 				biography : action.payload
 			}
-		case setDisplayName().type:
-			db.setDisplayName(action.payload);
+		case setPetName().type:
+			db.setPetName(action.payload);
 			return{
 				...state,
-				displayName : action.payload
+				petName : action.payload
 			}
 		case setHobbie().type:
 			db.setHobbie(action.payload);

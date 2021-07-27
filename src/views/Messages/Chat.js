@@ -46,7 +46,7 @@ const Chat = ({item,handleSelect,handleAddDelete,arrayDelete})=>{
 				}
 			</View>
 			<View style={styles.body}>
-				<Text style={styles.displayname}>{item.user.displayName}</Text>
+				<Text style={styles.displayname}>{item.user.petName}</Text>
 				<Text 
 					numberOfLines = {2}
 					style={styles.msm}
@@ -79,7 +79,7 @@ Chat.propTypes = {
 	user : PropTypes.shape({
 		_id:PropTypes.string.isRequired,
 		avatar:PropTypes.string.isRequired,
-		displayName : PropTypes.string.isRequired
+		petName : PropTypes.string.isRequired
 	}),
 	handleAddDelete : PropTypes.func.isRequired,
 	handleSelect : PropTypes.func.isRequired

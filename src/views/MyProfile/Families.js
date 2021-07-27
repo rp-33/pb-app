@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     View,
-    ScrollView,
+    FlatList,
     TouchableOpacity,
     Image,
     StyleSheet
@@ -12,37 +12,39 @@ import themeColor from '../../theme/color';
 
 const Families = ({pictures,handleModal,handlePicture,handleDelete})=>(
 
-	<ScrollView 
+	<FlatList
         horizontal={true}
         showsHorizontalScrollIndicator = {false}
+        data = {pictures}
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle ={{
         	alignItems : 'center',
         	paddingTop: 5,
         	paddingEnd: 5
         }}
-    >
-        <View style={styles.ctnAvatar}>
-            <TouchableOpacity
-                onPress = {()=>handleModal()}
-            >
-                <Image 
-                    source={require('../../assets/images/galery.png')}
-                    style={styles.icon}
-                /> 
-            </TouchableOpacity>
-        </View>
-
-        {([...pictures].reverse() || []).map((item,i)=>
-        	<View 
-                key={i} 
+        ListHeaderComponent ={
+            <View style={styles.ctnAvatar}>
+                <TouchableOpacity
+                    onPress = {()=>handleModal()}
+                >
+                    <Image 
+                        source={require('../../assets/images/galery.png')}
+                        style={styles.icon}
+                    /> 
+                </TouchableOpacity>
+            </View>
+        }
+        renderItem = {({item,index})=>(
+            <View 
+                key={index} 
                 style={styles.ctnPictures}
             >
-        		<TouchableOpacity onPress = {()=>handlePicture(item)}>
-            		<Image 
+                <TouchableOpacity onPress = {()=>handlePicture(item)}>
+                    <Image 
                         source={{uri:item}} 
                         style={styles.pictures}
                     /> 
-        		</TouchableOpacity>
+                </TouchableOpacity>
                 <TouchableOpacity 
                     onPress = {()=>handleDelete(item)}
                     style={styles.ctnDelete}
@@ -53,10 +55,9 @@ const Families = ({pictures,handleModal,handlePicture,handleDelete})=>(
                         style = {styles.iconDelete}
                     />
                 </TouchableOpacity>
-        	</View>
+            </View>
         )}
-         
-    </ScrollView>
+    />
 )
 
 Families.proptypes = {

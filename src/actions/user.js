@@ -17,8 +17,8 @@ export const setFamily = (payload)=>({
     payload
 });
 
-export const setDisplayName = (payload)=>({
-    type: 'DISPLAYNAME_USER',
+export const setPetName = (payload)=>({
+    type: 'PETNAME_USER',
     payload
 });
 

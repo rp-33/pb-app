@@ -7,10 +7,8 @@ import Home from '../views/Home/';
 import Login from '../views/Login';
 import SignUp from '../views/SignUp';
 import SignupAvatar from '../views/SignupAvatar';
-import SignupPets from '../views/SignupPets';
 import SignupLocation from '../views/SignupLocation';
 import Search from '../views/Search';
-import LostPets from '../views/LostPets';
 import Match from '../views/Match';
 import Messages from '../views/Messages';
 import MyProfile from '../views/MyProfile';
@@ -26,8 +24,6 @@ import StepCode from '../views/recoverPassword/StepCode';
 import StepPassword from '../views/recoverPassword/StepPassword';
 import StepPasswordSuccess from '../views/recoverPassword/StepSuccess';
 import EditPet from '../views/EditPet';
-import Adoption from '../views/Adoption';
-import Comments from '../views/Comments';
 import Marketplace from '../views/Marketplace';
 import { Icon } from 'native-base';
 
@@ -35,8 +31,6 @@ let db = new userDb();
 
 const nameIcon = {
   search:  'ios-compass',
-  lostPets : 'md-search',
-  adoption : 'md-paw',
   myProfile: 'contact',
   marketplace : 'cart'
 }
@@ -107,45 +101,6 @@ MessagesNavigator.navigationOptions = ({ navigation }) => {
   return { tabBarVisible };
 };
 
-const LostPetsNavigator = createStackNavigator({
-  LostPets : {
-    screen: LostPets,
-    navigationOptions: {headerShown: false}
-  },
-  Comments : {
-    screen: Comments,
-    navigationOptions: {headerShown: false}
-  }
-},
-{
-  initialRouteName: 'LostPets'
-})
-
-LostPetsNavigator.navigationOptions = ({ navigation }) => {
-  let tabBarVisible = true;
-  if (navigation.state.index > 0) tabBarVisible = false;
-  return { tabBarVisible };
-};
-
-const AdoptionNavigator = createStackNavigator({
-  Adoption : {
-    screen: Adoption,
-    navigationOptions: {headerShown: false}
-  },
-  Comments : {
-    screen: Comments,
-    navigationOptions: {headerShown: false}
-  }
-},
-{
-  initialRouteName: 'Adoption'
-})
-
-AdoptionNavigator.navigationOptions = ({ navigation }) => {
-  let tabBarVisible = true;
-  if (navigation.state.index > 0) tabBarVisible = false;
-  return { tabBarVisible };
-};
 
 const MarketplaceNavigator = createStackNavigator({
   Marketplace : {
@@ -190,12 +145,6 @@ MyProfileNavigator.navigationOptions = ({ navigation }) => {
 const DashboardNavigator = createMaterialBottomTabNavigator({
     search:{
       screen: SearchNavigator
-    },
-    lostPets:{
-      screen : LostPetsNavigator
-    },
-    adoption : {
-      screen : AdoptionNavigator
     },
     marketplace : {
       screen : MarketplaceNavigator
@@ -251,10 +200,6 @@ const SignupNavigator = createStackNavigator({
   Signup: {
     screen: SignUp,
     navigationOptions: {headerShown: false}
-  },
-  SignupPets : {
-    screen: SignupPets,
-    navigationOptions: {headerShown: false}   
   },
   SignupAvatar : {
     screen: SignupAvatar,

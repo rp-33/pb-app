@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    ScrollView,
+    FlatList,
     TouchableOpacity,
     StyleSheet,
     Text,
@@ -12,9 +12,11 @@ import Proptypes from 'prop-types';
 
 const Hobbies = ({hobbies,handleModal,handleDelete})=>{
 	return(
-		<ScrollView 
+		<FlatList
         	horizontal={true}
         	showsHorizontalScrollIndicator = {false}
+        	data = {[...hobbies].reverse() || []}
+        	keyExtractor={(item, index) => index.toString()}
         	contentContainerStyle ={{
         		alignItems : 'center',
         		marginHorizontal : 10,
@@ -22,21 +24,22 @@ const Hobbies = ({hobbies,handleModal,handleDelete})=>{
         		paddingTop: 5,
         		paddingEnd: 5
         	}}
-    	>
-    		<TouchableOpacity 
+        	ListHeaderComponent ={
+            	<TouchableOpacity 
     			style={styles.badge}
     			onPress = {()=>handleModal()}
-    		>
-    			<Text>New Hobbie</Text>
-    			<Icon 
-                    type='Ionicons'
-       	            name="md-add"  
-                    style = {styles.icon}
-                />
-    		</TouchableOpacity>
+    			>
+    				<Text>New Hobbie</Text>
+    				<Icon 
+                    	type='Ionicons'
+       	            	name="md-add"  
+                    	style = {styles.icon}
+                	/>
+    			</TouchableOpacity>
+       		}
 
-    		{([...hobbies].reverse() || []).map((item,i)=>
-    			<View
+       		renderItem = {({item,index})=>(
+            	<View
     				style={styles.badge} 
     				key={item}
     			>
@@ -49,9 +52,8 @@ const Hobbies = ({hobbies,handleModal,handleDelete})=>{
                 	/>
                 	</TouchableOpacity>
     			</View>
-    		)}
-
-    	</ScrollView>
+        	)}
+    	/>
 	)
 }
 

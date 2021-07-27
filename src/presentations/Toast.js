@@ -11,13 +11,13 @@ class Toast extends Component{
 
 
 	render(){
-		let {visible,title,type} = this.props;
+		let {visible,title,type} = this.props.toast;
 		return(
 			<Snackbar
         		visible={visible}
         		onDismiss={this._handleDismiss}  
         		duration = {3000}
-        		style = {{backgroundColor : (type == 'error') ? 'red' : 'black' }}
+        		style = {{backgroundColor : (type == 'error') ? '#b71c1c' : 'black' }}
         	>   
         		{title}
       		</Snackbar>

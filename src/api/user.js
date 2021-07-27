@@ -6,6 +6,7 @@ let db = new userDb();
 
 let route = `${endpointBase}`;
 
+
 export const verifiedEmail = (email)=>{
 	return axios({
 		method:'get',
@@ -184,12 +185,12 @@ export const deletefamily = (family)=>{
 	.catch((err) => {return err.response})
 }
 
-export const editDisplayName = (displayName)=>{
+export const editPetName = (petName)=>{
 	return axios({
 		method:'put',
-		url : `${route}/user/edit/displayName`,
+		url : `${route}/user/edit/petName`,
 		params :{
-			displayName
+			petName
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
@@ -200,7 +201,7 @@ export const editDisplayName = (displayName)=>{
 
 export const logout = ()=>{
 	return axios({
-		method:'put',
+		method:'get',
 		url : `${route}/logout`,
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
 	
@@ -418,12 +419,12 @@ export const findChat = (_id,page)=>{
 	.catch((err) => {return err.response})
 }
 
-export const findMessages = (lengthMessages)=>{
+export const findMessages = (page)=>{
 	return axios({
 		method:'get',
 		url : `${route}/find/messages`,
 		params :{
-			lengthMessages
+			page
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
@@ -435,9 +436,9 @@ export const sendCodePassword = (email)=>{
 	return axios({
 		method:'post',
 		url : `${route}/password/sendCode`,
-		params :{
+		data :{
 			email
-		},
+		}
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -450,6 +451,19 @@ export const verifyCodePassword = (email,code,token)=>{
 		params :{
 			email,
 			code
+		},
+		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
+	})
+	.then((response) => {return response})
+	.catch((err) => {return err.response})
+}
+
+export const newPassword = (password,token)=>{
+	return axios({
+		method:'put',
+		url : `${route}/password/new`,
+		params :{
+			password
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
 	})

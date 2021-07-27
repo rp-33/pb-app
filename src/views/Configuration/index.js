@@ -7,7 +7,6 @@ import {connect} from 'react-redux';
 import {
 	Container,
 	Content,
-	Toast,
 	Card, 
 	CardItem,
 	Text,
@@ -21,6 +20,7 @@ import {
 	setNotifications,
 	setAge
 } from '../../actions/user';
+import {setToast} from '../../actions/toast';
 import { setLoading } from '../../actions/loading';
 import {
 	logout,
@@ -51,7 +51,7 @@ class Configuration extends Component{
 	handleBack = ()=> this.props.navigation.goBack();
 
 	handleLogout = async()=>{
-		let {setLogout,setLoading,navigation} = this.props;	
+		let {setLogout,setLoading,setToast,navigation} = this.props;	
 		setLoading(true);
         try{            
             let { status, data } = await logout();
@@ -61,27 +61,13 @@ class Configuration extends Component{
 				navigation.navigate('Home');
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {      
+            	setToast({title:data.error,visible:true});                 
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+        	setToast({title:'Error',visible:true,type:'error'});
         }
         finally
         {
@@ -90,7 +76,7 @@ class Configuration extends Component{
 	}
 
 	setDistance = async(value)=> {
-		let {setLoading,setDistance} = this.props;	
+		let {setLoading,setDistance,setToast} = this.props;	
 		setLoading(true);
 		try
 		{
@@ -98,36 +84,16 @@ class Configuration extends Component{
 			if(status===201)
 			{
 				setDistance(value);
-				Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+				setToast({title:'Saved successfully',visible:true});
 			}
 			else
 			{
-				Toast.show({
-                	text: data.error,
-                	textStyle: { fontSize: 15  },
-                	buttonTextStyle: { color: '#000000', fontSize: 15 },
-                	buttonText: "Ok",
-                	duration: 3000,
-               		type: "danger"
-            	})
+				setToast({title:data.error,visible:true});
 			}
 		}
 		catch(err)
 		{
-			Toast.show({
-               	text: 'Error',
-               	textStyle: { fontSize: 15  },
-               	buttonTextStyle: { color: '#000000', fontSize: 15 },
-               	buttonText: "Ok",
-               	duration: 3000,
-               	type: "danger"
-            })
+			setToast({title:'Error',visible:true,type:'error'});
 		}
 		finally
         {
@@ -136,43 +102,23 @@ class Configuration extends Component{
 	}
 
 	setAge = async(values, actions)=>{
-        let { setLoading, setAge} = this.props;
+        let { setLoading, setAge,setToast} = this.props;
         setLoading(true);
         try{            
             let { status, data } = await editAge(values.age)
             if(status === 201)
             {   
                 setAge(parseInt(values.age));
-                Toast.show({
-                    text: 'saved successfully',
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000
-                }) 
+                setToast({title:'Saved successfully',visible:true});
             }
             else
-            {             
-                Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type: "danger"
-                })                
+            {   
+           		setToast({title:data.error,visible:true});              
             }
         }
         catch(err)
         {
-            Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+           setToast({title:'Error',visible:true,type:'error'});
         }
         finally
         {
@@ -180,9 +126,35 @@ class Configuration extends Component{
         }
     }
 
-	setSex = (value)=>this.props.setSex(value);
+	setSex = (value,status)=>{
+		if(status === 201)
+		{
+			this.props.setSex(value);
+		}
+		else if(status === 400)
+		{
+			this.props.setToast({title:value,visible:true});
+		}
+		else
+		{
+			this.props.setToast({title:value,visible:true,type:'error'});
+		}
+	}
 
-	setNotifications = (value)=>this.props.setNotifications(value);
+	setNotifications = (value,status)=>{
+		if(status === 201)
+		{
+			this.props.setNotifications(value);
+		}
+		else if(status === 400)
+		{
+			this.props.setToast({title:value,visible:true});
+		}
+		else
+		{
+			this.props.setToast({title:value,visible:true,type:'error'});
+		}
+	}
 
 	navigationPassword = ()=>this.props.navigation.navigate('EditPassword');
 
@@ -324,7 +296,8 @@ const mapDispatchToProps = dispatch => ({
     setDistance : value =>dispatch(setDistance(value)),
     setSex: value =>dispatch(setSex(value)),
     setNotifications: value =>dispatch(setNotifications(value)),
-    setAge : value =>dispatch(setAge(value))
+    setAge : value =>dispatch(setAge(value)),
+    setToast : value => dispatch(setToast(value))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Configuration);

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     View,
-    ScrollView,
+    FlatList,
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
@@ -12,37 +12,38 @@ import themeColor from '../../theme/color';
 
 const Pictures = ({pictures,avatar,handleModal,handlePicture,handleDelete})=>(
 
-	<ScrollView 
+	<FlatList
         horizontal={true}
         showsHorizontalScrollIndicator = {false}
+        ListHeaderComponent ={
+            <View style={styles.ctnAvatar}>
+                <TouchableOpacity
+                    onPress = {()=>handleModal()}
+                >
+                    <View style={styles.iconCamera}>
+                        <Icon 
+                        type='Ionicons'
+                        name="md-camera"  
+                        style = {styles.icon}
+                        />
+                    </View>
+                    <Avatar.Image 
+                    source={{uri:avatar}} 
+                    style={{marginHorizontal : 5}}
+                    size = {70} 
+                    /> 
+                </TouchableOpacity>
+            </View>
+        }
+        data = {pictures}
         contentContainerStyle ={{
         	alignItems : 'center',
         	paddingTop: 5,
         	paddingEnd: 5
         }}
-    >
-        <View style={styles.ctnAvatar}>
-            <TouchableOpacity
-                onPress = {()=>handleModal()}
-            >
-                <View style={styles.iconCamera}>
-                    <Icon 
-                        type='Ionicons'
-                        name="md-camera"  
-                        style = {styles.icon}
-                    />
-                </View>
-                <Avatar.Image 
-                    source={{uri:avatar}} 
-                    style={{marginHorizontal : 5}}
-                    size = {70} 
-                /> 
-            </TouchableOpacity>
-        </View>
-
-        {([...pictures].reverse() || []).map((item,i)=>
-        	<View 
-                key={i} 
+        renderItem = {({item,index})=>(
+            <View 
+                key={index} 
                 style={styles.ctnPictures}
             >
                 <TouchableOpacity onPress = {()=>handlePicture(item)}>
@@ -62,10 +63,10 @@ const Pictures = ({pictures,avatar,handleModal,handlePicture,handleDelete})=>(
                         style = {styles.iconDelete}
                     />
                 </TouchableOpacity>
-        	</View>
+            </View>
         )}
-         
-    </ScrollView>
+    />
+
 )
 
 

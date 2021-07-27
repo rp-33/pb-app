@@ -9,8 +9,7 @@ import {
 import {
 	Container,
 	Button,
-	Icon,
-	Toast
+	Icon
 } from 'native-base';
 import ModalBottom from './ModalBottom';
 import HeadBack from '../../presentations/HeadBack';

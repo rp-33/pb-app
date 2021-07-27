@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import store from './reducers/';
 import App from './App';
 import Loading from './presentations/Loading';
+import Toast from './presentations/Toast';
 
 export default class PetBenefits extends Component {
 
@@ -16,6 +17,7 @@ export default class PetBenefits extends Component {
                 <StyleProvider style={getTheme(material)}>
                     <Fragment>
                         <Loading />
+                        <Toast />
                         <App />
                     </Fragment>
                 </StyleProvider>

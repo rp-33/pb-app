@@ -10,8 +10,7 @@ import {
 	Form,
 	Button,
 	Text,
-	H1,
-	Toast
+	H1
 } from 'native-base';
 import {connect} from 'react-redux';
 import { Formik } from 'formik';
@@ -24,17 +23,17 @@ import {
 	sendCodePassword
 } from '../../api/user';
 import themeColor from '../../theme/color';
+import {setToast} from '../../actions/toast';
 
 class StepCode extends Component{
 	constructor(props){
-		super(props);
-		
+		super(props);		
 	}
 	
 	handleBack = ()=>this.props.navigation.navigate('Login');
 
 	_handleSubmit = async(values,actions)=>{
-		let {setLoading,navigation} = this.props;
+		let {setLoading,navigation,setToast} = this.props;
 		setLoading(true);
 		try
 		{
@@ -44,32 +43,16 @@ class StepCode extends Component{
 
 			if(status===200)
 			{
-				navigation.push('StepPassword',{
-					token : token
-				});
+				navigation.push('StepPassword',{token : token});
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-
-                })  
+				setToast({title:data.error,visible:true});
 			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })     
+			setToast({title:'Error',visible:true,type:'error'});    
 		}
 		finally
 		{
@@ -79,7 +62,7 @@ class StepCode extends Component{
 	}
 
 	handleReset = async()=>{
-		let {setLoading,navigation} = this.props;
+		let {setLoading,navigation,setToast} = this.props;
 		setLoading(true);
 		try
 		{
@@ -87,35 +70,16 @@ class StepCode extends Component{
 			let {status,data} = await sendCodePassword(email);
 			if(status===201)
 			{
-				Toast.show({
-                    text: 'Send code!',
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })  
+				setToast({title:'Send code',visible:true,type:'error'});  
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15 },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "OK",
-                    duration: 3000
-                })  
+				setToast({title:data.error,visible:true}); 
 			}
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Server error',
-                textStyle: { fontSize: 15 },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "OK",
-                duration: 3000,
-                type: "danger"
-            })     
+			setToast({title:'Error',visible:true,type:'error'});     
 		}
 		finally
 		{
@@ -204,7 +168,8 @@ const styles = StyleSheet.create({
 })
 
 const mapDispatchToProps = dispatch => ({
-	setLoading: value => dispatch(setLoading(value))
+	setLoading: value => dispatch(setLoading(value)),
+	setToast : value => dispatch(setToast(value))
 });
 
 export default connect(null, mapDispatchToProps)(StepCode);
