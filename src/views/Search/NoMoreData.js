@@ -30,8 +30,7 @@ const styles = StyleSheet.create({
 		width,
 		height,
 		justifyContent:'center',
-		alignItems:'center',
-		marginTop:100
+		alignItems:'center'
 	},
 	animation:{
 		marginBottom:height * 0.25,

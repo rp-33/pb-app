@@ -17,8 +17,8 @@ let {width,height} = Dimensions.get('window'),
 
 const CardItem = ({item,myLocation,handleProfile})=>{
 
+	if(!item) return null;
 	let {_id,avatar,petName,pictures,location} = item;
-	
 	const images = [avatar,...pictures];
 	const [position,setPosition] = useState(0);
 
@@ -39,7 +39,6 @@ const CardItem = ({item,myLocation,handleProfile})=>{
 		}
 		
 	}
-
 
 	return(
 		<View style={styles.container}>
@@ -70,11 +69,15 @@ const CardItem = ({item,myLocation,handleProfile})=>{
 }
 
 CardItem.propTypes = {
-	avatar : PropTypes.string.isRequired,
-	petName : PropTypes.string.isRequired,
-	pictures : PropTypes.array.isRequired,
-	location : PropTypes.object.isRequired,
-	myLocation : PropTypes.object.isRequired
+	item : PropTypes.shape({
+		_id : PropTypes.string.isRequired,
+		avatar : PropTypes.string.isRequired,
+		petName : PropTypes.string.isRequired,
+		pictures : PropTypes.array.isRequired,
+		location : PropTypes.object.isRequired
+	}),
+	myLocation : PropTypes.object.isRequired,
+	handleProfile : PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
 		elevation: 2,
 		position:'relative',
 		marginTop:-40,
-		backgroundColor:'white'
+		backgroundColor:'red'
 	},
 	ctnAvatar: {
 		width: '100%',

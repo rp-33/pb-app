@@ -60,15 +60,16 @@ export const login = (email,password)=>{
 	.catch((err) => {return err.response})
 }
 
-export const searchUsers = (sex,pet,location,distance)=>{
+export const searchUsers = (page,sex,pet,location,distance)=>{
 	return axios({
 		method:'get',
-		url:`${route}/searchUsers`,
+		url:`${route}/searchUsers/${page}`,
 		params :{
 			sex,
 			pet,
 			longitude : location[0],
 			latitude : location[1],
+			location,
 			distance
 		},
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
@@ -321,13 +322,10 @@ export const disLike = (user)=>{
 	.catch((err) => {return err.response})
 }
 
-export const findMatches = (lengthMatches)=>{
+export const findMatches = (page)=>{
 	return axios({
 		method:'get',
-		url : `${route}/find/matches`,
-		params :{
-			lengthMatches
-		},
+		url : `${route}/find/matches/${page}`,
 		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})

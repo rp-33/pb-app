@@ -1,18 +1,16 @@
 import React,{Component} from 'react';
+import { connect } from 'react-redux';
 import {
 	FlatList,
 	View,
 	Text
 } from 'react-native';
-import {
-	Container,
-	Toast
-}
-from 'native-base';
+import {Container} from 'native-base';
 import HeadBack from '../../presentations/HeadBack';
 import ItemMatch from './ItemMatch';
 import LoadingCard from './LoadingCard';
 import {findMatches} from '../../api/user';
+import {setToast} from '../../actions/toast';
 
 class Match extends Component{
 	constructor(props){
@@ -34,6 +32,7 @@ class Match extends Component{
 		{
 
 			this.setState({[obj]:true});
+			let {setToast} = this.props;
 			let {status,data} = await findMatches(this.state.matches.length);
 			if(status ===200)
 			{
@@ -48,27 +47,13 @@ class Match extends Component{
 			}
 			else
 			{
-				Toast.show({
-                    text: data.error,
-                    textStyle: { fontSize: 15  },
-                    buttonTextStyle: { color: '#000000', fontSize: 15 },
-                    buttonText: "Ok",
-                    duration: 3000,
-                    type:'danger'
-                })   
+				setToast({title:data.error,visible:true});  
 			}
 
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type:'danger'
-            }) 
+			setToast({title:'Error',visible:true,type:'error'});
 		}
 		finally
 		{
@@ -130,4 +115,8 @@ class Match extends Component{
 	}
 }
 
-export default Match;
+const mapDispatchToProps = dispatch => ({
+    setToast : value => dispatch(setToast(value))
+});
+
+export default connect(null, mapDispatchToProps)(Match);

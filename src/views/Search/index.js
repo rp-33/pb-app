@@ -19,6 +19,7 @@ class Search extends Component{
 		this.state = {
 			match : false,
 			users : [],
+			noData : true,
 		}
 		this.sex = props.user.sex;
 		this.pet = props.user.pet;
@@ -27,11 +28,11 @@ class Search extends Component{
 	}
 
 	componentDidMount(){
-		this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+		this._handleFindUser(this.state.users.length,this.sex,this.pet,this.location,this.distance);
 	}
 
 	componentDidUpdate(prevProps, prevState){
-		this._handleUpdate();
+		//this._handleUpdate();
 	}
 
 	_handleUpdate(){
@@ -40,31 +41,37 @@ class Search extends Component{
 		if(this.sex !=this.props.user.sex)
 		{
 			this.sex = this.props.user.sex;
-			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+			this._handleFindUser(this.state.users.length,this.sex,this.pet,this.location,this.distance);
+			
 		}
 		else if(this.distance != this.props.user.distance)
 		{
 			this.distance = this.props.user.distance;
-			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+			this._handleFindUser(this.state.users.length,this.sex,this.pet,this.location,this.distance);
 		
 		}
 		else if(this.pet != this.props.user.pet)
 		{
 			this.pet = this.props.user.pet;
-			this._handleFindUser(this.sex,this.pet,this.location,this.distance);
+			this._handleFindUser(this.state.users.length,this.sex,this.pet,this.location,this.distance);
 		
 		}
+		
 	}
 
-	_handleFindUser = async(sex,pet,location,distance)=>{
+	_handleFindUser = async(page,sex,pet,location,distance)=>{
 		try
 		{
 			let {setToast} = this.props;
-			let {status,data} = await searchUsers(sex,pet,location,distance);
+			this.setState({noData:true});
+			let {status,data} = await searchUsers(page,sex,pet,location,distance);
 			if(status === 200)
 			{
-				this.setState({
-					users : data
+				if(data.length===0) return this.setState({noData:true});
+				this.setState(prevState=>{
+					return{
+						users: page === 0 ? data : [...prevState.users,...data]
+					}
 				})
 			}
 			else
@@ -104,7 +111,6 @@ class Search extends Component{
 		{
 			let {setToast} = this.props;
 			let {status,data} = await like(_id,false);
-			console.log(data,status)
 			if(status ===201)
 			{
 
@@ -125,6 +131,14 @@ class Search extends Component{
 		{
 			setToast({title:'Error',visible:true,type:'Error'});    
 		}
+	}
+
+	_handleEndUser = ()=>{
+		this.setState({
+			users : []
+		},()=>{
+				this._handleFindUser(this.state.users.length,this.sex,this.pet,this.location,this.distance);
+		});
 	}
 	
 	userRemoved = (index)=>{
@@ -171,11 +185,15 @@ class Search extends Component{
             		}}
             		onSwipedLeft = {(index,item)=>this._handleDislike(item)}
             		onSwipedRight = {(index,item)=>this._handleLike(item)}
-            		cardIndex={0}
             		stackSize= {7}
+            		verticalSwipe = {false}
             		backgroundColor = {'transparent'}
+            		onSwipedAll ={this._handleEndUser}
                		/>
                 </View>
+            	}
+            	{
+            		(this.state.users.length === 0 && this.state.noData) && <NoMoreData/>
             	}
 			</Container>
 		)
