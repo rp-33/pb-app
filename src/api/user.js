@@ -6,11 +6,10 @@ let db = new userDb();
 
 let route = `${endpointBase}`;
 
-
 export const verifiedEmail = (email)=>{
 	return axios({
 		method:'get',
-		url:`${route}/verifiedEmail`,
+		url:`${route}/verifiedEmail/user`,
 		params:{
 			email
 		}
@@ -38,7 +37,7 @@ export const signup = (petName,displayName,email,sex,age,password,avatar,pet,lon
 
     return axios({
 		method:'post',
-		url : `${route}/signup`,
+		url : `${route}/signup/user`,
 		data : formData,
 		headers:{'content-type':'multipart/form-data'}
 	})
@@ -50,7 +49,7 @@ export const login = (email,password)=>{
 
 	return axios({
 		method:'post',
-		url:`${route}/login`,
+		url:`${route}/login/user`,
 		data:{
 			email,
 			password
@@ -72,7 +71,7 @@ export const searchUsers = (page,sex,pet,location,distance)=>{
 			location,
 			distance
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -123,7 +122,7 @@ export const editBiography = (biography)=>{
 		params :{
 			biography
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -137,7 +136,7 @@ export const saveHobbie = (hobbie)=>{
 		params :{
 			hobbie
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -151,7 +150,7 @@ export const deletehobbie = (hobbie)=>{
 		params :{
 			hobbie
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -165,7 +164,7 @@ export const deletepicture = (picture)=>{
 		params :{
 			picture
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -179,7 +178,7 @@ export const deletefamily = (family)=>{
 		params :{
 			family
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -193,7 +192,7 @@ export const editPetName = (petName)=>{
 		params :{
 			petName
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -203,8 +202,8 @@ export const editPetName = (petName)=>{
 export const logout = ()=>{
 	return axios({
 		method:'get',
-		url : `${route}/logout`,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		url : `${route}/logout/user`,
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -218,7 +217,7 @@ export const editDistance = (distance)=>{
 		params :{
 			distance
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -232,7 +231,7 @@ export const editSex = (sex)=>{
 		params :{
 			sex
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}
+		headers:{'Authorization': "bearer " + db.get().token}
 	
 	})
 	.then((response) => {return response})
@@ -246,7 +245,7 @@ export const editNotifications = (notifications)=>{
 		params :{
 			notifications
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -259,7 +258,7 @@ export const editAge = (age)=>{
 		params :{
 			age
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -272,7 +271,7 @@ export const editPet = (pet)=>{
 		params :{
 			pet
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -289,7 +288,7 @@ export const editPassword = (password,token)=>{
 		params :{
 			password
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
+		headers:{'Authorization': "bearer " + token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -303,7 +302,7 @@ export const like = (user,status)=>{
 			user,
 			like : status
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -316,7 +315,7 @@ export const disLike = (user)=>{
 		params :{
 			user
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -326,7 +325,7 @@ export const findMatches = (page)=>{
 	return axios({
 		method:'get',
 		url : `${route}/find/matches/${page}`,
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -339,7 +338,7 @@ export const findUser = (_id)=>{
 		params :{
 			_id
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -356,7 +355,7 @@ export const newMessageText = (_id,type,text,receiver,time)=>{
 			receiver,
 			time
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -397,7 +396,7 @@ export const newMessageLocation = (_id,type,text,location,receiver,time)=>{
 			time,
 			text
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -411,7 +410,7 @@ export const findChat = (_id,page)=>{
 			_id,
 			page
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -424,7 +423,7 @@ export const findMessages = (page)=>{
 		params :{
 			page
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + db.get().token}	
+		headers:{'Authorization': "bearer " + db.get().token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})
@@ -463,7 +462,7 @@ export const newPassword = (password,token)=>{
 		params :{
 			password
 		},
-		headers:{'content-type':'multipart/form-data','Authorization': "bearer " + token}	
+		headers:{'Authorization': "bearer " + token}	
 	})
 	.then((response) => {return response})
 	.catch((err) => {return err.response})

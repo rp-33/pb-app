@@ -1,6 +1,6 @@
 import Database from '../realm/';
 
-class userDb{
+class UserDb{
 	constructor(){
 		this.user = Database.objects('User')[0];
 	}
@@ -123,4 +123,4 @@ class userDb{
 
 }
 
-export default userDb;
+export default UserDb;

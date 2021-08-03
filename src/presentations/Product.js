@@ -10,10 +10,12 @@ import color from '../theme/color';
 import PropTypes from 'prop-types';
 import Rating from './Rating';
 
-const Product = ({product})=>{
+const Product = ({product,handleNavigationDetails})=>{
 
 	return(
-		<TouchableNativeFeedback>
+		<TouchableNativeFeedback
+			onPress = {()=>handleNavigationDetails(product._id,product.name)}
+		>
 			<View style={styles.ctn}>
 				<Image 
 					style = {styles.image}
@@ -21,10 +23,10 @@ const Product = ({product})=>{
 				/>
 				<View style={styles.ctnInf}>
 					<Text style={styles.name}>item.name</Text>
-					<View style={styles.type}>
-						<Text style={styles.textType}>type</Text>
+					<View style={styles.price}>
+						<Text style={styles.textPrice}>price</Text>
 					</View>
-					<Text>item.distance</Text>
+					<Text style={styles.distance}>item.distance</Text>
 				</View>
 				<Rating 
 					value = {4}
@@ -59,14 +61,15 @@ const styles = StyleSheet.create({
 		fontWeight:'bold',
 		fontSize:16
 	},
-	type:{
+	price:{
 		flexDirection:'row',
 		alignItems:'center'
 	},
-	textType:{
-		color:'#c7c7c7',
+	textPrice:{
 		marginTop:5,
-		marginLeft:5
+	},
+	distance:{
+		color:'#c7c7c7'
 	},
 	rating : {
 		position:'absolute',

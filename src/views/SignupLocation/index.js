@@ -15,7 +15,9 @@ import Head from '../../presentations/HeadBack';
 import {permissionsLocation} from '../../services/permissions';
 import {geolocation} from '../../services/geolocation';
 import {signup} from '../../api/user';
+import {signupBusiness} from '../../api/business';
 import { setAuth } from '../../actions/user';
+import { setAuthBusiness } from '../../actions/business';
 import { setLoading } from '../../actions/loading';
 import {setToast} from '../../actions/toast';
 
@@ -31,6 +33,7 @@ class SignupLocation extends Component{
 			errorLocation : false,
 			findLocation : false
 		}
+        this.type = props.navigation.state.params.type;
 	}
 
 	componentDidMount(){
@@ -64,7 +67,7 @@ class SignupLocation extends Component{
         }
     }
 
-    handleSignup = async ()=>{
+    handleSignupUser = async ()=>{
         let { setAuth, setLoading,navigation,setToast} = this.props;
         setLoading(true);
         try
@@ -93,6 +96,36 @@ class SignupLocation extends Component{
         }
     }
 
+    handleSignupBusiness = async ()=>{
+        let { setAuthBusiness,setLoading,navigation,setToast} = this.props;
+        setLoading(true);
+        try
+        {
+            let {displayName,email,type,password} = navigation.state.params;
+            let {longitude,latitude} = this.state.location
+            let {status,data} = await signupBusiness(displayName,email,type,password,longitude,latitude);
+            if(status === 201)
+            {
+                setAuthBusiness(data)
+                //navigation.navigate('DashboardBusiness');
+            }
+            else
+            {
+                setToast({title:data.error || 'Path not found',visible:true,type:'error'});  
+            }
+
+        }
+        catch(err)
+        {
+            setToast({title:'Error',visible:true,type:'error'});     
+        }
+        finally
+        {
+            setLoading(false);
+        }
+    }
+
+
     handleBack = ()=>this.props.navigation.goBack();
 
 	render(){
@@ -109,10 +142,10 @@ class SignupLocation extends Component{
 							location = {this.state.location}
 						/>
                         <View style = {styles.ctnBtn}>
-						  <Button 
-                            onPress={this.handleSignup} 
-                            full 
-                            rounded
+						    <Button 
+                                onPress={this.type ?  this.handleSignupBusiness : this.handleSignupUser} 
+                                full 
+                                rounded
                             >
                                 <Text>Save</Text>
                             </Button>
@@ -140,6 +173,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => ({
     setLoading: value => dispatch(setLoading(value)),
     setAuth: value => dispatch(setAuth(value)),
+    setAuthBusiness: value => dispatch(setAuthBusiness(value)),
     setToast : value => dispatch(setToast(value))
 });
 

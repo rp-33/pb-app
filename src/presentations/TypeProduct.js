@@ -5,19 +5,20 @@ import {
 	Image,
 	StyleSheet
 } from 'react-native';
-import {pets} from '../json/pets';
-import {imagePet} from '../utils/imagePet';
+import {typeProduct} from '../json/typeProduct';
+import {imageTypeProduct} from '../utils/imageTypeProduct';
 import themeColor from '../theme/color';
 import PropTypes from 'prop-types';
 
-const SelectPet = ({petSelect,handleSelectPet})=>{
+const TypeProduct = ({type,handleSelect})=>{
 
 	return(
 		<FlatList 
+			style = {styles.flatlist}
         	horizontal={true}
         	showsHorizontalScrollIndicator = {false}
         	keyExtractor={(item, index) => index.toString()}
-        	data = {pets()}
+        	data = {typeProduct()}
         	contentContainerStyle ={{
         	alignItems : 'center',
         	paddingVertical: 5,
@@ -27,11 +28,11 @@ const SelectPet = ({petSelect,handleSelectPet})=>{
         	renderItem = {({item,index})=>(
         		<TouchableOpacity 
                 	key = {item}
-        			onPress = {()=>handleSelectPet(item)}
-        			style={[styles.ctnImage,{backgroundColor: item == petSelect ? themeColor.primary : 'white'}]}
+        			onPress = {()=>handleSelect(item)}
+        			style={[styles.ctnImage,{backgroundColor: item == type ? themeColor.primary : 'white'}]}
         		>
         	    	<Image 
-        	            source ={ imagePet(item)}
+        	            source ={imageTypeProduct(item)}
         	            style={styles.image}
         	        /> 
         		</TouchableOpacity>
@@ -40,12 +41,16 @@ const SelectPet = ({petSelect,handleSelectPet})=>{
     )
 }
 
-SelectPet.propTypes = {
-    petSelect : PropTypes.string.isRequired,
-    handleSelectPet :PropTypes.func.isRequired
+TypeProduct.propTypes = {
+    type : PropTypes.string.isRequired,
+    handleSelect :PropTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
+	flatlist : {
+		marginVertical : 10,
+		paddingBottom : 20
+	},
 	ctnImage : {
 		width:60,
 		height:60,
@@ -62,4 +67,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default SelectPet;
+export default TypeProduct;

@@ -19,15 +19,21 @@ import FieldInput from '../../presentations/FieldInput';
 import { SignInSchema } from '../../constants';
 import themeColor from '../../theme/color';
 import {login} from '../../api/user';
+import {loginBusiness} from '../../api/business';
 import {setAuth} from '../../actions/user';
 import {setLoading} from '../../actions/loading';
 import {setToast} from '../../actions/toast';
+import { setAuthBusiness } from '../../actions/business';
 
 class Login extends Component{
+	constructor(props){
+		super(props)
+		this.rol = props.navigation.state.params.rol;
+	}
 
 	_handleBack = ()=>this.props.navigation.goBack();
 
-	_handleLogin = async(values,actions)=>{
+	_handleLoginUser = async(values,actions)=>{
 		let { setAuth, setLoading,setToast,navigation} = this.props;
         setLoading(true);
 		try
@@ -39,6 +45,35 @@ class Login extends Component{
 			{
 				setAuth(data);
 				navigation.navigate('Dashboard');
+			}
+			else
+			{
+				setToast({title:data.error,visible:true});
+			}
+
+		}
+		catch(err)
+		{
+			setToast({title:'Error',visible:true,type:'error'}); 
+		}
+		finally
+		{
+			setLoading(false);
+		}
+	}
+
+	_handleLoginBusiness = async(values,actions)=>{
+		let { setAuthBusiness, setLoading,setToast,navigation} = this.props;
+        setLoading(true);
+		try
+		{	
+		
+			let {email,password} = values;
+			let {status,data} = await loginBusiness(email,password);
+			if(status === 200)
+			{
+				setAuthBusiness(data);
+				navigation.navigate('DashboardBusiness');
 			}
 			else
 			{
@@ -72,7 +107,7 @@ class Login extends Component{
     						password : ''
     					}}
     					validationSchema = {SignInSchema}
-    					onSubmit={this._handleLogin}
+    					onSubmit={this.rol === 'business' ? this._handleLoginBusiness : this._handleLoginUser}
   					>
     				{formikProps => (
     					<Form style={styles.form}>
@@ -149,6 +184,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = dispatch => ({
 	setLoading: value => dispatch(setLoading(value)),
     setAuth: value => dispatch(setAuth(value)),
+    setAuthBusiness: value => dispatch(setAuthBusiness(value)),
     setToast : value => dispatch(setToast(value))
 });
 

@@ -2,7 +2,6 @@ import React,{Component} from 'react';
 import {
 	StyleSheet,
 	View,
-	TouchableOpacity,
 } from 'react-native';
 import {
 	Container,
@@ -16,15 +15,14 @@ import {connect} from 'react-redux';
 import { Formik } from 'formik';
 import HeadBack from '../../presentations/HeadBack';
 import FieldInput from '../../presentations/FieldInput';
-import SelectPet from '../../presentations/SelectPet';
-import Groupsex from '../../presentations/Groupsex';
-import { SignUpSchema } from '../../constants';
+import TypeProduct from '../../presentations/TypeProduct';
+import {SignUpSchemaBusiness} from '../../constants';
 import themeColor from '../../theme/color';
-import {verifiedEmail} from '../../api/user';
-import { setLoading } from '../../actions/loading';
+import {verifiedEmail} from '../../api/business';
+import {setLoading} from '../../actions/loading';
 import {setToast} from '../../actions/toast';
 
-class SignUp extends Component{
+class SignupBusiness extends Component{
 
 	_handleBack = ()=>this.props.navigation.goBack();
 
@@ -37,7 +35,7 @@ class SignUp extends Component{
 			let {status,data} = await verifiedEmail(values.email);
 			if(status === 204)
 			{
-				navigation.push('SignupAvatar',values)
+				navigation.push('SignupLocation',values)
 			}
 			else
 			{
@@ -70,46 +68,28 @@ class SignUp extends Component{
     						email: '',
     						password : '',
     						displayName : '',
-    						petName : '',
-    						sex:'male',
     						repeatPassword : '',
-    						age : '',
-    						pet : 'dog'
+    						type : 'boutique'
     					}}
     					isSubmitting = {true}
-    					validationSchema = {SignUpSchema}
+    					validationSchema = {SignUpSchemaBusiness}
     					onSubmit={this._handleSignup}
   					>
     				{formikProps => (
     					<Form style={styles.form}>
-    					<SelectPet 
-							petSelect = {formikProps.values['pet']}
-							handleSelectPet = {(pet)=>formikProps.setFieldValue('pet', pet)}
+    					<TypeProduct 
+							type = {formikProps.values['type']}
+							handleSelect = {(type)=>formikProps.setFieldValue('type', type)}
 						/>
     					<FieldInput
    							formikProps = {formikProps}
-							placeholder="Displayname"
+							placeholder="Business name"
 							type='displayName'					
-						/>
-    					<FieldInput
-   							formikProps = {formikProps}
-							placeholder="Pet's name"
-							type='petName'					
 						/>
    						<FieldInput
    							formikProps = {formikProps}
 							placeholder="Email"
 							type = "email"						
-						/>
-						<FieldInput
-   							formikProps = {formikProps}
-							placeholder="Pet age"
-							type = "age"
-							keyboardType = {"phone-pad"}					
-						/>
-						<Groupsex 
-							formikProps = {formikProps}
-							handleSelect = {(sex)=>formikProps.setFieldValue('sex', sex)}
 						/>
 						<FieldInput
    							formikProps = {formikProps}
@@ -135,14 +115,7 @@ class SignUp extends Component{
           				</Form>
     				)}
   					</Formik>
-  					<View style={styles.CtnConditions}>
-  						<TouchableOpacity>
-            				<Text style={styles.textOneCondition}>To register you accept our</Text>
-            				<Text style={styles.textTwoCondition}>terms and conditions</Text>
-         	 			</TouchableOpacity>
-         	 		</View>
   				</Content>
-
 			</Container>
 		)
 	}
@@ -163,20 +136,6 @@ const styles = StyleSheet.create({
 	},
 	btn:{
 		marginTop:10
-	},
-	CtnConditions:{
-		width:'100%',
-		paddingTop:15,
-		marginTop:20,
-		alignItems:'center',
-		marginBottom:20
-	},
-	textOneCondition:{
-		color:themeColor.secondary
-	},
-	textTwoCondition:{
-		color:themeColor.primary,
-		marginLeft:15
 	}
 
 })
@@ -186,4 +145,4 @@ const mapDispatchToProps = dispatch => ({
 	setToast : value => dispatch(setToast(value))
 });
 
-export default connect(null, mapDispatchToProps)(SignUp);
+export default connect(null, mapDispatchToProps)(SignupBusiness);

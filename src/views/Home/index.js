@@ -13,11 +13,11 @@ import {
 class Home extends Component{
 
 	_handleSignup = ()=>{
-		this.props.navigation.push('Signup');
+		this.props.navigation.push('Signup',{action:'signug'});
 	}
 
 	_handleLogin = ()=>{
-		this.props.navigation.push('Login');
+		this.props.navigation.push('Login',{action:'login'});
 	}
 
 	render(){

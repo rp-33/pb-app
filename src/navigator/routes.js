@@ -3,6 +3,7 @@ import { createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import userDb from '../database/user';
+import businessDb from '../database/business';
 import Home from '../views/Home/';
 import Login from '../views/Login';
 import SignUp from '../views/SignUp';
@@ -25,14 +26,28 @@ import StepPassword from '../views/recoverPassword/StepPassword';
 import StepPasswordSuccess from '../views/recoverPassword/StepSuccess';
 import EditPet from '../views/EditPet';
 import Marketplace from '../views/Marketplace';
+import SearchProduct from '../views/SearchProduct';
+import DetailsProduct from '../views/DetailsProduct';
+import Rol from '../views/Rol';
+import SignupBusiness from '../views/SignupBusiness';
+import MyProfileBusiness from '../views/MyProfileBusiness';
+import SalesBusiness from '../views/SalesBusiness';
+import MyProductsBusiness from '../views/MyProductsBusiness';
 import { Icon } from 'native-base';
 
-let db = new userDb();
+let dbUser = new userDb();
+let dbBusiness = new businessDb();
 
-const nameIcon = {
-  search:  'ios-compass',
-  myProfile: 'contact',
-  marketplace : 'cart'
+const nameIconUser = {
+  Search:  'ios-compass',
+  MyProfile: 'contact',
+  Marketplace : 'cart'
+}
+
+const nameIconBusiness = {
+  MyProductsBusiness:  'basket',
+  SalesBusiness: 'cart',
+  MyProfileBusiness : 'contact'
 }
 
 const MessagesNavigator = createStackNavigator({
@@ -106,7 +121,18 @@ const MarketplaceNavigator = createStackNavigator({
   Marketplace : {
     screen : Marketplace,
     navigationOptions : {headerShown: false}
+  },
+  SearchProduct : {
+    screen : SearchProduct,
+    navigationOptions : {headerShown :false}
+  },
+  DetailsProduct : {
+    screen : DetailsProduct,
+    navigationOptions : {headerShown :false}
   }
+},
+{
+  initialRouteName : 'Marketplace'
 })
 
 const MyProfileNavigator = createStackNavigator({
@@ -143,13 +169,13 @@ MyProfileNavigator.navigationOptions = ({ navigation }) => {
 
 
 const DashboardNavigator = createMaterialBottomTabNavigator({
-    search:{
+    Search:{
       screen: SearchNavigator
     },
-    marketplace : {
+    Marketplace : {
       screen : MarketplaceNavigator
     },
-    myProfile:{
+    MyProfile:{
       screen: MyProfileNavigator
     }
   },
@@ -161,18 +187,51 @@ const DashboardNavigator = createMaterialBottomTabNavigator({
             <Icon 
                 style={{color: tintColor, fontSize: 27}} 
                 type="Ionicons" 
-                name={nameIcon[routeName]} 
+                name={nameIconUser[routeName]} 
             />
         )
       }
     },
     labeled :false,
-    initialRouteName:'search',
+    initialRouteName:'Search',
     backBehavior:'initialRoute',
     barStyle: { backgroundColor: '#fff' },
     activeColor:'#ff6969',
     inactiveColor:'#c7c7c7'
 })
+
+const DashboardBusinessNavigator = createMaterialBottomTabNavigator({
+    MyProductsBusiness:{
+      screen: MyProductsBusiness
+    },
+    SalesBusiness : {
+      screen : SalesBusiness
+    },
+    MyProfileBusiness:{
+      screen: MyProfileBusiness
+    }
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => {
+      const { routeName } = navigation.state;
+      return {
+        tabBarIcon : ({tintColor})=>(
+            <Icon 
+                style={{color: tintColor, fontSize: 27}} 
+                type="Ionicons" 
+                name={nameIconBusiness[routeName]} 
+            />
+        )
+      }
+    },
+    labeled :false,
+    initialRouteName:'MyProductsBusiness',
+    backBehavior:'initialRoute',
+    barStyle: { backgroundColor: '#fff' },
+    activeColor:'#ff6969',
+    inactiveColor:'#c7c7c7'
+})
+
 
 const PasswordNavigator = createStackNavigator({
   RecoverPassword : {
@@ -197,6 +256,10 @@ const PasswordNavigator = createStackNavigator({
 })
 
 const SignupNavigator = createStackNavigator({
+  Rol :{   
+    screen : Rol,
+    navigationOptions: {headerShown: false} 
+  },
   Signup: {
     screen: SignUp,
     navigationOptions: {headerShown: false}
@@ -208,10 +271,28 @@ const SignupNavigator = createStackNavigator({
   SignupLocation :{
     screen : SignupLocation,
     navigationOptions: {headerShown: false}  
+  },
+  SignupBusiness :{
+    screen : SignupBusiness,
+    navigationOptions: {headerShown: false}  
   }
 },
 {
-  initialRouteName: 'Signup' 
+  initialRouteName: 'Rol' 
+})
+
+const LoginNavigator = createStackNavigator({
+  Rol :{   
+    screen : Rol,
+    navigationOptions: {headerShown: false} 
+  },
+  Login: {
+    screen: Login,
+    navigationOptions: {headerShown: false}
+  }
+},
+{
+  initialRouteName: 'Rol' 
 })
 
 const HomeNavigator = createStackNavigator({
@@ -220,7 +301,7 @@ const HomeNavigator = createStackNavigator({
     navigationOptions: {headerShown: false}
   },
   Login: {
-    screen: Login,
+    screen: LoginNavigator,
     navigationOptions: {headerShown: false}
   },
   Signup: {
@@ -244,10 +325,14 @@ const RootNavigator = createSwitchNavigator({
   Dashboard : {
     screen: DashboardNavigator,
     navigationOptions: {header: null }
+  },
+  DashboardBusiness : {
+    screen: DashboardBusinessNavigator,
+    navigationOptions: {header: null }
   }
 },
 {
-  initialRouteName: db.get().isAuthenticated ? 'Dashboard' : 'Home'
+  initialRouteName: dbBusiness.get().isAuthenticated ? 'DashboardBusiness' : 'Home'
 })
 
 export { RootNavigator };

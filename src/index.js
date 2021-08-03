@@ -1,5 +1,5 @@
 import React, {Component,Fragment} from 'react';
-import { Root,StyleProvider } from "native-base";
+import {StyleProvider } from "native-base";
 import getTheme from '../native-base-theme/components';
 import material from '../native-base-theme/variables/material';
 import { Provider } from 'react-redux';
@@ -13,15 +13,13 @@ export default class PetBenefits extends Component {
     render() {
         return (
         <Provider store={store}>
-            <Root>
-                <StyleProvider style={getTheme(material)}>
-                    <Fragment>
-                        <Loading />
-                        <Toast />
-                        <App />
-                    </Fragment>
-                </StyleProvider>
-            </Root>
+            <StyleProvider style={getTheme(material)}>
+                <Fragment>
+                    <Loading />
+                    <Toast />
+                    <App />
+                </Fragment>
+            </StyleProvider>
         </Provider>
         );
     }

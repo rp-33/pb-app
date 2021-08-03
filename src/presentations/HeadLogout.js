@@ -15,12 +15,14 @@ import {
 import themeColor from '../theme/color';
 import PropTypes from 'prop-types';
 
-const HeadOption = ({title}) => (
+const Head = ({ handleBack, title,handleLogout }) => (
 	<Header noShadow style={{borderBottomWidth: 0,backgroundColor: 'white'}} iosBarStyle='dark-content' androidStatusBarColor='white'>
         <Left style={Platform.OS === 'android' ? {flex:1} : null}>
-        	<Button primary transparent>
-                <Icon type='ionicons' name="ios-notifications-outline" />	
+        	{handleBack &&
+            <Button primary transparent onPress={()=>handleBack()}>
+                <Icon name="ios-arrow-back" type='Ionicons'/>
             </Button>
+           	}           
         </Left>
         <Body style={Platform.OS === 'android' ? {flex:2,alignItems: 'center'} : null}>
             {!title 
@@ -35,16 +37,19 @@ const HeadOption = ({title}) => (
             }
         </Body>
         <Right style={Platform.OS === 'android' ? {flex:1} : null}>
-        	<Button primary transparent>
-                <Icon type='ionicons' name="ios-add-circle-outline" />	
+            <Button primary onPress={handleLogout} transparent>
+                <Text style={{color:themeColor.primary}}>Logout</Text>
+                <Icon size={20} name={Platform.OS === 'android' ? 'md-exit' : 'ios-exit'}/>             
             </Button>
         </Right>
     </Header>
 );
 
 
-HeadOption.proptypes = {
-	title : PropTypes.string
+Head.proptypes = {
+    handleBack : PropTypes.func,
+    title : PropTypes.string,
+    handleLogout : PropTypes.func.isRequired
 };
 
-export default HeadOption;
+export default Head;

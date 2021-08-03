@@ -1,10 +1,5 @@
 import * as Yup from 'yup';
-
-import {
-    Dimensions,
-} from 'react-native';
-
-let { width, height } = Dimensions.get('window');
+import {width} from './dimensions';
 
 export const Width = (width < 540) ? width : 540;
 
@@ -67,11 +62,31 @@ export const SignUpSchema = Yup.object().shape({
         .required("Displayname required"),
     petName: Yup.string()
         .required("Pet's name required"),
+    pet: Yup.string()
+        .required("Pet type required"),
     email: Yup.string()
         .email('Email invalid')
         .required('Email required'),
     age : Yup.number()
         .required("Pet's name required"),
+    password: Yup.string()
+        .min(6, 'The password must be at least 6 characters')
+        .max(16, 'Password must be less than 16 characters')
+        .required('Required password'),
+    repeatPassword: Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Both passwords must match')
+        .required('Repeat Password is required'),
+});
+
+
+export const SignUpSchemaBusiness = Yup.object().shape({
+    displayName: Yup.string()
+        .required("Business name required"),
+    type: Yup.string()
+        .required("Displayname required"),
+    email: Yup.string()
+        .email('Email invalid')
+        .required('Email required'),
     password: Yup.string()
         .min(6, 'The password must be at least 6 characters')
         .max(16, 'Password must be less than 16 characters')
