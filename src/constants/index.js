@@ -95,3 +95,18 @@ export const SignUpSchemaBusiness = Yup.object().shape({
         .oneOf([Yup.ref('password'), null], 'Both passwords must match')
         .required('Repeat Password is required'),
 });
+
+
+export const ProductSchema = Yup.object().shape({
+    name: Yup.string()
+        .required("Name required"),
+    price: Yup.string()
+        .required("Price required"),
+    description: Yup.string()
+        .required('Description required'),
+    photos : Yup.array()
+        .required('Photos required'),
+    pet : Yup.string()
+        .required("Price required")
+});
+

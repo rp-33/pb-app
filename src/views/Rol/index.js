@@ -11,6 +11,7 @@ class Rol extends Component{
 
 	handleSelect = rol=>{
 		let {action} = this.props.navigation.state.params;
+
 		if(action==='signup')
 		{
 			this.props.navigation.push(rol === 'business' ? 'SignupBusiness' : 'Signup');

@@ -9,7 +9,7 @@ import {
 	Text
 } from 'native-base';
 
-const FieldInput = ({placeholder,type,formikProps,secureTextEntry, keyboardType})=>{
+const FieldInput = ({placeholder,type,formikProps,secureTextEntry, keyboardType,multiline})=>{
 	const { handleChange, handleBlur, values, errors, touched } = formikProps;
 	
 	return(
@@ -22,6 +22,7 @@ const FieldInput = ({placeholder,type,formikProps,secureTextEntry, keyboardType}
           			secureTextEntry={secureTextEntry}
                     keyboardType={keyboardType}
           			value={values[type]}
+          			multiline = {multiline}
             	/>
         	</Item>
         	{
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
 	ctnInput:{
 		marginVertical : 10
 	},
-	 error: {
+	error: {
         fontStyle: 'italic',
         color: '#ed2f2f',
         fontSize: 15,

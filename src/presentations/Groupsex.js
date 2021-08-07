@@ -7,7 +7,7 @@ import {
 import { RadioButton } from 'react-native-paper';
 
 const Groupsex= ({formikProps,handleSelect})=>{
-	const { values} = formikProps;
+	const {values} = formikProps;
 	return(
 		<View style={styles.ctnSex}>
 			<View style={styles.sex}>

@@ -38,7 +38,16 @@ export const changeStatusMessage = (data,status,time)=>{
 }//me actualiza los estatus de los mensajes
 
 export const replaceMessage = (data,newMessage,_id)=>{
-	return data.map((item,indice)=>(item._id == _id ? item.message.unshift(newMessage) : item))
+	
+	for(let i=0;i<data.length;i++)
+	{
+		if(data[i]._id===_id){
+			let newMessages = [...newMessage,...data[i].message];
+			data[i].message = newMessages;
+		}
+		return data;
+	}
+	return data;
 }//me actualiza mis mensajes;
 
 export const includes = (data,_id)=>{

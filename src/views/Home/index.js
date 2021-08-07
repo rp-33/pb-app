@@ -13,7 +13,7 @@ import {
 class Home extends Component{
 
 	_handleSignup = ()=>{
-		this.props.navigation.push('Signup',{action:'signug'});
+		this.props.navigation.push('Signup',{action:'signup'});
 	}
 
 	_handleLogin = ()=>{

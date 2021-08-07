@@ -6,6 +6,7 @@ import {
 	Text,
 	Image
 } from 'react-native';
+import { Badge } from 'react-native-paper';
 import {Icon} from 'native-base';
 import themeColor from '../../theme/color';
 import PropTypes from 'prop-types';
@@ -56,9 +57,7 @@ const Chat = ({item,handleSelect,handleAddDelete,arrayDelete})=>{
 			</View>
 			<View style={styles.right}>
 				<Text style={styles.time}>{date(item.message[0].time)}</Text>
-				<View style={styles.badge}>
-					<Text style={styles.timeText}>9</Text>
-				</View>
+				<Badge style={styles.badge}>1</Badge>
 			</View>
 		</View>
 	</TouchableNativeFeedback>
@@ -124,18 +123,6 @@ const styles = StyleSheet.create({
 	time : {
 		color:themeColor.secondary,
 		marginBottom:4
-	},
-	badge:{
-		backgroundColor:themeColor.primary,
-		width:30,
-		height:30,
-		justifyContent:'center',
-		alignItems: 'center',
-		borderRadius:15
-	},
-	timeText:{
-		fontSize:11,
-		color:'white',
 	},
 	ctnIconDelete : {
 		width:20,

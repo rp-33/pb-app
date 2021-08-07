@@ -25,6 +25,7 @@ import {
 } from '../../api/user';
 import {updateToMessage} from '../../actions/messages';
 import {findChatId} from '../../utils/message';
+import {setToast} from '../../actions/toast';
 
 class Chat extends Component{
 	constructor(props){
@@ -32,7 +33,7 @@ class Chat extends Component{
 		this._id = this.props.navigation.getParam('_id');
 		this.user = this.props.navigation.getParam('user');		
 		this.state = {
-			messages : findChatId(this.props.messages,this._id),
+			messages : [],
 			modalBottom : false,
 			loading : true,
 			noData : false
@@ -63,6 +64,7 @@ class Chat extends Component{
 	findChat=async(page)=>{
 		try
 		{
+			let {setToast} = this.props;
 			this.setState({loading:true});
 			let {status,data} = await findChat(this._id,page);
 			if(status ===200)
@@ -76,18 +78,15 @@ class Chat extends Component{
 					}
 				})
 			}
+			else
+			{
+				setToast({title:data.error,visible:true});
+			}
 
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type:'danger'
-            }) 
+			setToast({title:'Error',visible:true,type:'error'}); 
 		}
 		finally
 		{
@@ -106,8 +105,7 @@ class Chat extends Component{
     };
 
 	handleLoadMore = ()=>{
-		if(!this.state.noData) this.findChat(this.state.messages.length);
-		
+		if(!this.state.noData) this.findChat(this.state.messages.length);	
 	}
 
 	setMessage = async(text)=>{
@@ -119,7 +117,7 @@ class Chat extends Component{
 					messages : [message,...prevState.messages]
 				}			
 			},()=>{
-				this.props.updateToMessage(this._id,message,this.user);//actualizo messages
+				this.props.updateToMessage(this._id,this.state.messages,this.user);//actualizo messages
 			})
 			let {status,data} = await newMessageText(this._id,'text',text,this.user._id,message.time);
 			let statusMsm = (status===201) ? 'sent' : 'error';
@@ -128,14 +126,7 @@ class Chat extends Component{
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+			this.props.setToast({title:'Error',visible:true,type:'error'}); 
 		}
 
 	}
@@ -160,14 +151,7 @@ class Chat extends Component{
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+			this.props.setToast({title:'Error',visible:true,type:'error'}); 
 		}
 	}
 
@@ -192,14 +176,7 @@ class Chat extends Component{
 		}
 		catch(err)
 		{
-			Toast.show({
-                text: 'Error',
-                textStyle: { fontSize: 15  },
-                buttonTextStyle: { color: '#000000', fontSize: 15 },
-                buttonText: "Ok",
-                duration: 3000,
-                type: "danger"
-            })
+			this.props.setToast({title:'Error',visible:true,type:'error'});
 		}
 	}
 

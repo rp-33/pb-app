@@ -33,6 +33,7 @@ import SignupBusiness from '../views/SignupBusiness';
 import MyProfileBusiness from '../views/MyProfileBusiness';
 import SalesBusiness from '../views/SalesBusiness';
 import MyProductsBusiness from '../views/MyProductsBusiness';
+import CreateProduct from '../views/CreateProduct'
 import { Icon } from 'native-base';
 
 let dbUser = new userDb();
@@ -200,9 +201,30 @@ const DashboardNavigator = createMaterialBottomTabNavigator({
     inactiveColor:'#c7c7c7'
 })
 
+const ProductBusinessNavigator = createStackNavigator({
+  MyProductsBusiness : {
+    screen: MyProductsBusiness,
+    navigationOptions: {headerShown: false}
+  },
+  CreateProduct : {
+    screen: CreateProduct,
+    navigationOptions: {headerShown: false}
+  }
+},
+{
+  initialRouteName: 'MyProductsBusiness'
+})
+
+ProductBusinessNavigator.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) tabBarVisible = false;
+  return { tabBarVisible };
+};
+
+
 const DashboardBusinessNavigator = createMaterialBottomTabNavigator({
     MyProductsBusiness:{
-      screen: MyProductsBusiness
+      screen: ProductBusinessNavigator
     },
     SalesBusiness : {
       screen : SalesBusiness
@@ -332,7 +354,7 @@ const RootNavigator = createSwitchNavigator({
   }
 },
 {
-  initialRouteName: dbBusiness.get().isAuthenticated ? 'DashboardBusiness' : 'Home'
+  initialRouteName: (dbUser.get().isAuthenticated || dbBusiness.get().isAuthenticated) ? (dbUser.get().isAuthenticated ? 'Dashboard' : 'DashboardBusiness') : 'Home'
 })
 
 export { RootNavigator };

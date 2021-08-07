@@ -17,6 +17,9 @@ let {width,height} = Dimensions.get('window'),
 
 const CardItem = ({item,myLocation,handleProfile})=>{
 
+	console.log(myLocation)
+	console.log(item)
+
 	if(!item) return null;
 	let {_id,avatar,petName,pictures,location} = item;
 	const images = [avatar,...pictures];
@@ -74,9 +77,12 @@ CardItem.propTypes = {
 		avatar : PropTypes.string.isRequired,
 		petName : PropTypes.string.isRequired,
 		pictures : PropTypes.array.isRequired,
-		location : PropTypes.object.isRequired
+		location : PropTypes.shape({
+			coordinates : PropTypes.array.isRequired,
+			type : PropTypes.string.isRequired
+		}).isRequired
 	}),
-	myLocation : PropTypes.object.isRequired,
+	myLocation : PropTypes.array.isRequired,
 	handleProfile : PropTypes.func.isRequired
 }
 
